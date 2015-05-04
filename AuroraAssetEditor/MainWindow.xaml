@@ -1,0 +1,34 @@
+﻿<Window x:Class="AuroraAssetEditor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Aurora Asset Editor v{0}.{1} by Swizzy thanks to MaesterRowen" MinHeight="350" MinWidth="550"
+        Width="550" Height="350" AllowDrop="True" PreviewDragEnter="OnDragEnter" Drop="OnMainDrop">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Menu Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Background="White">
+            <MenuItem Header="File">
+                <MenuItem Header="Create New Asset File" Click="CreateNewOnClick" />
+                <MenuItem Header="Load Asset File" Click="LoadAssetOnClick" />
+                <Separator/>
+                <MenuItem Header="Save Boxart/Cover Asset" Click="SaveBoxartOnClick" />
+                <MenuItem Header="Save Background Asset" Click="SaveBackgroundOnClick" />
+                <MenuItem Header="Save Screenshots Asset" Click="SaveScreenshotsOnClick" />
+                <MenuItem Header="Save Icon/Banner Asset" Click="SaveIconBannerOnClick" />
+                <Separator/>
+                <MenuItem Header="Exit" Click="ExitOnClick"/>
+            </MenuItem>
+            <MenuItem Header="Settings">
+                <MenuItem x:Name="AutoResizeImages"  Header="Auto Resize Images" IsCheckable="True" IsChecked="True" />
+            </MenuItem>
+        </Menu>
+        <TabControl Grid.Row="1" HorizontalAlignment="Stretch" Margin="10" VerticalAlignment="Stretch">
+            <TabItem Header="Boxart/Cover" x:Name="BoxartTab" x:FieldModifier="private" />
+            <TabItem Header="Background" x:Name="BackgroundTab" x:FieldModifier="private" />
+            <TabItem Header="Screenshots" x:Name="ScreenshotsTab" x:FieldModifier="private" />
+            <TabItem Header="Icon/Banner" x:Name="IconBannerTab" x:FieldModifier="private" />
+        </TabControl>
+    </Grid>
+</Window>

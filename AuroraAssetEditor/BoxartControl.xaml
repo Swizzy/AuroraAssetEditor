@@ -1,0 +1,16 @@
+﻿<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    x:Class="AuroraAssetEditor.BoxartControl"
+    x:Name="UserControl" AllowDrop="True" PreviewDragEnter="OnDragEnter" Drop="OnDrop">
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Background="WhiteSmoke">
+        <Grid>
+            <GroupBox Header="Preview" Width="920" Height="620" VerticalAlignment="Top" HorizontalAlignment="Left" BorderBrush="Black">
+                <Image x:Name="PreviewImg" HorizontalAlignment="Left" Height="600" VerticalAlignment="Top" Width="900" />
+            </GroupBox>
+        </Grid>
+    </ScrollViewer>
+</UserControl>
