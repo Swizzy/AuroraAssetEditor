@@ -104,6 +104,7 @@ namespace AuroraAssetEditor {
                     uint offset = 0;
                     Header.DataSize = 0;
                     EntryTable.Flags = 0;
+                    EntryTable.ScreenshotCount = 0;
                     for(var i = 0; i < EntryTable.Entries.Length; i++) {
                         var entry = EntryTable.Entries[i];
                         if(entry.Size <= 0)
@@ -112,6 +113,8 @@ namespace AuroraAssetEditor {
                         offset += entry.Size;
                         Header.DataSize += entry.Size;
                         EntryTable.Flags |= (uint)(1 << i);
+                        if(i <= (int)AssetType.ScreenshotEnd && i >= (int)AssetType.ScreenshotStart)
+                            EntryTable.ScreenshotCount++;
                     }
                     ret.AddRange(BitConverter.GetBytes(Swap(Header.Magic)));
                     ret.AddRange(BitConverter.GetBytes(Swap(Header.Version)));
@@ -140,8 +143,14 @@ namespace AuroraAssetEditor {
             public bool HasIconBanner { get { return EntryTable.Entries[(int)AssetType.Icon].Size > 0 || EntryTable.Entries[(int)AssetType.Banner].Size > 0; } }
 
             private bool SetImage(Image img, int index, bool useCompression) {
-                if(img == null || index > (int)AssetType.Max)
+                if(index > (int)AssetType.Max)
                     return false;
+                if(img == null) {
+                    EntryTable.Entries[index].ImageData = null;
+                    EntryTable.Entries[index].VideoData = new byte[0];
+                    EntryTable.Entries[index].TextureHeader = new byte[EntryTable.Entries[index].TextureHeader.Length];
+                    return true;
+                }
                 EntryTable.Entries[index].ImageData = img;
                 var data = ImageToRawArgb(img);
                 byte[] video = new byte[0], header = new byte[0];
@@ -271,7 +280,7 @@ namespace AuroraAssetEditor {
 
             public uint Flags { get; internal set; }
 
-            public uint ScreenshotCount { get; private set; }
+            public uint ScreenshotCount { get; internal set; }
 
             public override string ToString() {
                 var sb = new StringBuilder();
