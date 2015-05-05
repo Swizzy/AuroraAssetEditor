@@ -104,7 +104,7 @@ namespace AuroraAssetEditor {
         private void SelectNewBanner(object sender, RoutedEventArgs e) {
             var img = _main.LoadImage("Select new banner", "banner.png", new Size(420, 96));
             if(img != null)
-                Load(img, true);
+                Load(img, false);
         }
 
         private void OnContextMenuOpening(object sender, ContextMenuEventArgs e) {
