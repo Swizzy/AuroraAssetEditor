@@ -212,13 +212,19 @@ namespace AuroraAssetEditor {
                                          };
             if(ofd.ShowDialog() != true)
                 return null;
-            using(var ms = new MemoryStream(File.ReadAllBytes(ofd.FileName))) {
-                var img = Image.FromStream(ms);
-                if(!img.Size.Equals(newSize) && AutoResizeImages.IsChecked) {
-                    //TODO: Add option to honor aspect ratio
-                    img = new Bitmap(img, newSize);
+            try {
+                using(var ms = new MemoryStream(File.ReadAllBytes(ofd.FileName))) {
+                    var img = Image.FromStream(ms);
+                    if(!img.Size.Equals(newSize) && AutoResizeImages.IsChecked) {
+                        //TODO: Add option to honor aspect ratio
+                        img = new Bitmap(img, newSize);
+                    }
+                    return img;
                 }
-                return img;
+            }
+            catch(Exception ex) {
+                SaveFileError(ofd.FileName, ex);
+                return null;
             }
         }
 
@@ -233,16 +239,22 @@ namespace AuroraAssetEditor {
                 return null;
             var ret = new List<Image>();
             foreach(var fileName in ofd.FileNames) {
-                using(var ms = new MemoryStream(File.ReadAllBytes(fileName))) {
-                    var img = Image.FromStream(ms);
-                    if(!img.Size.Equals(newSize) && AutoResizeImages.IsChecked) {
-                        //TODO: Add option to honor aspect ratio
-                        img = new Bitmap(img, newSize);
+                try {
+                    using(var ms = new MemoryStream(File.ReadAllBytes(fileName))) {
+                        var img = Image.FromStream(ms);
+                        if(!img.Size.Equals(newSize) && AutoResizeImages.IsChecked) {
+                            //TODO: Add option to honor aspect ratio
+                            img = new Bitmap(img, newSize);
+                        }
+                        ret.Add(img);
                     }
-                    ret.Add(img);
+                }
+                catch(Exception ex) {
+                    SaveFileError(ofd.FileName, ex);
+                    return ret;
                 }
             }
-            return ret.ToArray();
+            return ret;
         }
     }
 }
