@@ -125,6 +125,13 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Placeholders\banner.png" />
+    <Resource Include="Resources\Placeholders\cover.png" />
+    <Resource Include="Resources\Placeholders\icon.png" />
+    <Resource Include="Resources\Placeholders\background.png" />
+    <Resource Include="Resources\Placeholders\screenshot.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

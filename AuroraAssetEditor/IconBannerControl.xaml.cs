@@ -6,6 +6,7 @@
 // 	Copyright (c) 2015 Swizzy. All rights reserved.
 
 namespace AuroraAssetEditor {
+    using System;
     using System.Drawing.Imaging;
     using System.IO;
     using System.Windows;
@@ -28,8 +29,6 @@ namespace AuroraAssetEditor {
             InitializeComponent();
             _main = main;
             _assetFile = new AuroraAsset.AssetFile();
-            _haveBanner = false;
-            _haveIcon = false;
         }
 
         public void Save() {
@@ -39,10 +38,8 @@ namespace AuroraAssetEditor {
         }
 
         public void Reset() {
-            //TODO: Set default banner
-            _haveBanner = false;
-            //TODO: Set default icon
-            _haveIcon = false;
+            SetPreview(null, true);
+            SetPreview(null, false);
             _assetFile = new AuroraAsset.AssetFile();
         }
 
@@ -56,11 +53,11 @@ namespace AuroraAssetEditor {
         private void SetPreview(Image img, bool icon) {
             if(img == null) {
                 if(icon) {
-                    //TODO: Set default icon
+                    PreviewIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/Placeholders/icon.png", UriKind.Absolute));
                     _haveIcon = false;
                 }
                 else {
-                    //TODO: Set default banner
+                    PreviewBanner.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/Placeholders/banner.png", UriKind.Absolute));
                     _haveBanner = false;
                 }
                 return;

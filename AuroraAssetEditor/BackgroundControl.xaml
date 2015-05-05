@@ -10,7 +10,7 @@
         <GroupBox Header="Preview" VerticalAlignment="Top" HorizontalAlignment="Left" BorderBrush="Black" Margin="10">
             <Viewbox Stretch="Uniform" HorizontalAlignment="Left" VerticalAlignment="Top" MaxHeight="720" MaxWidth="1280">
                 <Image x:Name="PreviewImg" MaxHeight="720" MaxWidth="1280" Height="720" Width="1280"
-                       ContextMenuService.ShowOnDisabled="True" ContextMenuOpening="OnContextMenuOpening">
+                       ContextMenuService.ShowOnDisabled="True" ContextMenuOpening="OnContextMenuOpening" Source="Resources/Placeholders/background.png">
                     <Image.ContextMenu>
                         <ContextMenu>
                             <MenuItem x:Name="SaveContextMenuItem" Header="Save Background To File"

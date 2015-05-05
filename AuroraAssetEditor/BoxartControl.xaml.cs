@@ -6,6 +6,7 @@
 // 	Copyright (c) 2015 Swizzy. All rights reserved.
 
 namespace AuroraAssetEditor {
+    using System;
     using System.Drawing.Imaging;
     using System.IO;
     using System.Windows;
@@ -27,8 +28,6 @@ namespace AuroraAssetEditor {
             InitializeComponent();
             _main = main;
             _assetFile = new AuroraAsset.AssetFile();
-            //TODO: Set default cover
-            _havePreview = false;
         }
 
         public void Save() {
@@ -38,10 +37,7 @@ namespace AuroraAssetEditor {
         }
 
         public void Reset() {
-            //TODO: Set default cover
-            _havePreview = false;
-            if(_memoryStream != null)
-                _memoryStream.Close();
+            SetPreview(null);
             _assetFile = new AuroraAsset.AssetFile();
         }
 
@@ -51,8 +47,11 @@ namespace AuroraAssetEditor {
         }
 
         private void SetPreview(Image img) {
-            if(img == null)
+            if(img == null) {
+                PreviewImg.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/Placeholders/cover.png", UriKind.Absolute));
+                _havePreview = false;
                 return;
+            }
             if(_memoryStream != null)
                 _memoryStream.Close();
             var bi = new BitmapImage();

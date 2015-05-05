@@ -6,6 +6,7 @@
 // 	Copyright (c) 2015 Swizzy. All rights reserved.
 
 namespace AuroraAssetEditor {
+    using System;
     using System.Drawing.Imaging;
     using System.IO;
     using System.Linq;
@@ -43,7 +44,7 @@ namespace AuroraAssetEditor {
         }
 
         public void Reset() {
-            PreviewImg.Source = null;
+            SetPreview(null);
             _assetFile = new AuroraAsset.AssetFile();
             _screenshots = new Image[AuroraAsset.AssetType.ScreenshotEnd - AuroraAsset.AssetType.ScreenshotStart];
             CBox.SelectedIndex = 0;
@@ -57,7 +58,7 @@ namespace AuroraAssetEditor {
 
         private void SetPreview(Image img) {
             if(img == null) {
-                //TODO: Replace image with the "no Screenshot" image
+                PreviewImg.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/Placeholders/screenshot.png", UriKind.Absolute));
                 _havePreview = false;
                 return;
             }

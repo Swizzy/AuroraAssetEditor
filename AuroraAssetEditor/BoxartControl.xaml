@@ -12,7 +12,7 @@
                      MaxHeight="600">
                 <Image x:Name="PreviewImg" ContextMenuService.ShowOnDisabled="True"
                        ContextMenuOpening="OnContextMenuOpening" MaxWidth="900" MaxHeight="600" Width="900"
-                       Height="600">
+                       Height="600" Source="Resources/Placeholders/cover.png">
                     <Image.ContextMenu>
                         <ContextMenu>
                             <MenuItem x:Name="SaveContextMenuItem" Header="Save Cover To File"
