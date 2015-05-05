@@ -24,8 +24,9 @@
                 <MenuItem x:Name="AutoResizeImages"  Header="Auto Resize Images" IsCheckable="True" IsChecked="True" />
                 <MenuItem x:Name="UseCompression"  Header="Use Compression" IsCheckable="True" IsChecked="True" />
             </MenuItem>
+            <MenuItem Header="Edit" x:Name="EditMenu" SubmenuOpened="EditMenuOpened"/>
         </Menu>
-        <TabControl Grid.Row="1" HorizontalAlignment="Stretch" Margin="10" VerticalAlignment="Stretch">
+        <TabControl Grid.Row="1" HorizontalAlignment="Stretch" Margin="10" VerticalAlignment="Stretch" SelectionChanged="TabChanged">
             <TabItem Header="Boxart/Cover" x:Name="BoxartTab" x:FieldModifier="private" />
             <TabItem Header="Background" x:Name="BackgroundTab" x:FieldModifier="private" />
             <TabItem Header="Icon/Banner" x:Name="IconBannerTab" x:FieldModifier="private" />

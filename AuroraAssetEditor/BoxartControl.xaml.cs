@@ -22,7 +22,7 @@ namespace AuroraAssetEditor {
         private readonly MainWindow _main;
         private AuroraAsset.AssetFile _assetFile;
         private MemoryStream _memoryStream;
-        private bool _havePreview;
+        internal bool HavePreview;
 
         public BoxartControl(MainWindow main) {
             InitializeComponent();
@@ -49,7 +49,7 @@ namespace AuroraAssetEditor {
         private void SetPreview(Image img) {
             if(img == null) {
                 PreviewImg.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/Placeholders/cover.png", UriKind.Absolute));
-                _havePreview = false;
+                HavePreview = false;
                 return;
             }
             if(_memoryStream != null)
@@ -62,7 +62,7 @@ namespace AuroraAssetEditor {
             bi.StreamSource = _memoryStream;
             bi.EndInit();
             PreviewImg.Source = bi;
-            _havePreview = true;
+            HavePreview = true;
         }
 
         public void Load(Image img) {
@@ -74,14 +74,14 @@ namespace AuroraAssetEditor {
 
         private void OnDrop(object sender, DragEventArgs e) { _main.DragDrop(this, e); }
 
-        private void SaveImageToFileOnClick(object sender, RoutedEventArgs e) { MainWindow.SaveToFile(_assetFile.GetBoxart(), "Select where to save the Cover", "cover.png"); }
+        internal void SaveImageToFileOnClick(object sender, RoutedEventArgs e) { MainWindow.SaveToFile(_assetFile.GetBoxart(), "Select where to save the Cover", "cover.png"); }
 
-        private void SelectNewCover(object sender, RoutedEventArgs e) {
+        internal void SelectNewCover(object sender, RoutedEventArgs e) {
             var img = _main.LoadImage("Select new cover", "cover.png", new System.Drawing.Size(900, 600));
             if(img != null)
                 Load(img);
         }
 
-        private void OnContextMenuOpening(object sender, ContextMenuEventArgs e) { SaveContextMenuItem.IsEnabled = _havePreview; }
+        private void OnContextMenuOpening(object sender, ContextMenuEventArgs e) { SaveContextMenuItem.IsEnabled = HavePreview; }
     }
 }

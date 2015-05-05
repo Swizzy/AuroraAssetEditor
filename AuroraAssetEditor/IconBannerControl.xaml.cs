@@ -21,9 +21,9 @@ namespace AuroraAssetEditor {
     /// </summary>
     public partial class IconBannerControl {
         private readonly MainWindow _main;
+        internal bool HaveBanner;
+        internal bool HaveIcon;
         private AuroraAsset.AssetFile _assetFile;
-        private bool _haveBanner;
-        private bool _haveIcon;
 
         public IconBannerControl(MainWindow main) {
             InitializeComponent();
@@ -54,11 +54,11 @@ namespace AuroraAssetEditor {
             if(img == null) {
                 if(icon) {
                     PreviewIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/Placeholders/icon.png", UriKind.Absolute));
-                    _haveIcon = false;
+                    HaveIcon = false;
                 }
                 else {
                     PreviewBanner.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/Placeholders/banner.png", UriKind.Absolute));
-                    _haveBanner = false;
+                    HaveBanner = false;
                 }
                 return;
             }
@@ -71,11 +71,11 @@ namespace AuroraAssetEditor {
             bi.EndInit();
             if(icon) {
                 PreviewIcon.Source = bi;
-                _haveIcon = true;
+                HaveIcon = true;
             }
             else {
                 PreviewBanner.Source = bi;
-                _haveBanner = true;
+                HaveBanner = true;
             }
         }
 
@@ -91,25 +91,25 @@ namespace AuroraAssetEditor {
 
         private void OnDrop(object sender, DragEventArgs e) { _main.DragDrop(this, e); }
 
-        private void SaveIconToFileOnClick(object sender, RoutedEventArgs e) { MainWindow.SaveToFile(_assetFile.GetIcon(), "Select where to save the Icon", "icon.png"); }
+        internal void SaveIconToFileOnClick(object sender, RoutedEventArgs e) { MainWindow.SaveToFile(_assetFile.GetIcon(), "Select where to save the Icon", "icon.png"); }
 
-        private void SaveBannerToFileOnClick(object sender, RoutedEventArgs e) { MainWindow.SaveToFile(_assetFile.GetBanner(), "Select where to save the Banner", "banner.png"); }
+        internal void SaveBannerToFileOnClick(object sender, RoutedEventArgs e) { MainWindow.SaveToFile(_assetFile.GetBanner(), "Select where to save the Banner", "banner.png"); }
 
-        private void SelectNewIcon(object sender, RoutedEventArgs e) {
+        internal void SelectNewIcon(object sender, RoutedEventArgs e) {
             var img = _main.LoadImage("Select new icon", "icon.png", new Size(64, 64));
             if(img != null)
                 Load(img, true);
         }
 
-        private void SelectNewBanner(object sender, RoutedEventArgs e) {
+        internal void SelectNewBanner(object sender, RoutedEventArgs e) {
             var img = _main.LoadImage("Select new banner", "banner.png", new Size(420, 96));
             if(img != null)
                 Load(img, false);
         }
 
         private void OnContextMenuOpening(object sender, ContextMenuEventArgs e) {
-            SaveIconContextMenuItem.IsEnabled = _haveIcon;
-            SaveBannerContextMenuItem.IsEnabled = _haveBanner;
+            SaveIconContextMenuItem.IsEnabled = HaveIcon;
+            SaveBannerContextMenuItem.IsEnabled = HaveBanner;
         }
     }
 }

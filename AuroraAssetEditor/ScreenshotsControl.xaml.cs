@@ -23,7 +23,7 @@ namespace AuroraAssetEditor {
     public partial class ScreenshotsControl {
         private readonly MainWindow _main;
         private AuroraAsset.AssetFile _assetFile;
-        private bool _havePreview;
+        internal bool HavePreview;
         private Image[] _screenshots;
 
         public ScreenshotsControl(MainWindow main) {
@@ -59,7 +59,7 @@ namespace AuroraAssetEditor {
         private void SetPreview(Image img) {
             if(img == null) {
                 PreviewImg.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/Placeholders/screenshot.png", UriKind.Absolute));
-                _havePreview = false;
+                HavePreview = false;
                 return;
             }
             var bi = new BitmapImage();
@@ -70,7 +70,7 @@ namespace AuroraAssetEditor {
             bi.StreamSource = ms;
             bi.EndInit();
             PreviewImg.Source = bi;
-            _havePreview = true;
+            HavePreview = true;
         }
 
         public void Load(Image img, bool replace) {
@@ -126,22 +126,22 @@ namespace AuroraAssetEditor {
 
         private void OnDrop(object sender, DragEventArgs e) { _main.DragDrop(this, e); }
 
-        private void RemoveScreenshot(object sender, RoutedEventArgs e) { Load(null, true); }
+        internal void RemoveScreenshot(object sender, RoutedEventArgs e) { Load(null, true); }
 
-        private void SaveImageToFileOnClick(object sender, RoutedEventArgs e) {
+        internal void SaveImageToFileOnClick(object sender, RoutedEventArgs e) {
             var disp = CBox.SelectedItem as ScreenshotDisplay;
             if(disp == null)
                 return;
             MainWindow.SaveToFile(_screenshots[disp.Index], "Select where to save the Screenshot", string.Format("screenshot{0}.png", disp.Index));
         }
 
-        private void SelectNewScreenshot(object sender, RoutedEventArgs e) {
+        internal void SelectNewScreenshot(object sender, RoutedEventArgs e) {
             var img = _main.LoadImage("Select new screenshot", "screenshot.png", new Size(1000, 562));
             if(img != null)
                 Load(img, true);
         }
 
-        private void AddNewScreenshot(object sender, RoutedEventArgs e) {
+        internal void AddNewScreenshot(object sender, RoutedEventArgs e) {
             var imglist = _main.LoadImages("Select new screenshot(s)", "screenshot.png", new Size(1000, 562));
             if(imglist == null)
                 return;
@@ -150,8 +150,8 @@ namespace AuroraAssetEditor {
         }
 
         private void OnContextMenuOpening(object sender, ContextMenuEventArgs e) {
-            SaveContextMenuItem.IsEnabled = _havePreview;
-            RemoveContextMenuItem.IsEnabled = _havePreview;
+            SaveContextMenuItem.IsEnabled = HavePreview;
+            RemoveContextMenuItem.IsEnabled = HavePreview;
         }
 
         private class ScreenshotDisplay {
