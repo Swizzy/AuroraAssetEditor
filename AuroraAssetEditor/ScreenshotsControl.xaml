@@ -5,23 +5,37 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     x:Class="AuroraAssetEditor.ScreenshotsControl"
-    x:Name="UserControl" AllowDrop="True" PreviewDragEnter="OnDragEnter" Drop="OnDrop">
-    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Background="WhiteSmoke">
-        <Grid>
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto"/>
-				<RowDefinition Height="*"/>
-			</Grid.RowDefinitions>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="Auto" />
-				<ColumnDefinition Width="*" />
-			</Grid.ColumnDefinitions>
-			<TextBlock Grid.Row="0" Grid.Column="0" Text="Select screenshot:" Margin="10"/>
-			<ComboBox x:Name="CBox" Grid.Row="0" Grid.Column="1" Margin="0, 10, 0, 10" HorizontalAlignment="Left" Width="200" SelectionChanged="CBox_SelectionChanged"/>
-            <GroupBox Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" Header="Preview" Width="920" Height="620" VerticalAlignment="Top" HorizontalAlignment="Left"
-                      BorderBrush="Black" Margin="10, 0, 0, 0">
-                <Image x:Name="PreviewImg" HorizontalAlignment="Left" Height="600" VerticalAlignment="Top" Width="900" />
-            </GroupBox>
-        </Grid>
-    </ScrollViewer>
+    x:Name="UserControl" AllowDrop="True" PreviewDragEnter="OnDragEnter" Drop="OnDrop" Background="WhiteSmoke">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Select screenshot:" Margin="10" />
+        <ComboBox x:Name="CBox" Grid.Row="0" Grid.Column="1" Margin="0, 10, 0, 10" HorizontalAlignment="Left"
+                  Width="200" SelectionChanged="CBox_SelectionChanged" />
+        <GroupBox Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" Header="Preview" VerticalAlignment="Top"
+                  HorizontalAlignment="Left" BorderBrush="Black" Margin="10, 0, 0, 0">
+            <Viewbox Stretch="Uniform" HorizontalAlignment="Left" VerticalAlignment="Top" MaxHeight="562"
+                     MaxWidth="1000">
+                <Image x:Name="PreviewImg" MaxHeight="562" MaxWidth="1000" Height="562" Width="1000"
+                       ContextMenuService.ShowOnDisabled="True" ContextMenuOpening="OnContextMenuOpening">
+                    <Image.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem x:Name="SaveContextMenuItem" Header="Save Screenshot To File"
+                                      Click="SaveImageToFileOnClick" />
+                            <MenuItem Header="Replace Screenshot" Click="SelectNewScreenshot" />
+                            <MenuItem Header="Add new Screenshot" Click="AddNewScreenshot" />
+                            <MenuItem x:Name="RemoveContextMenuItem" Header="Remove Screenshot"
+                                      Click="RemoveScreenshot" />
+                        </ContextMenu>
+                    </Image.ContextMenu>
+                </Image>
+            </Viewbox>
+        </GroupBox>
+    </Grid>
 </UserControl>

@@ -5,12 +5,23 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     x:Class="AuroraAssetEditor.BoxartControl"
-    x:Name="UserControl" AllowDrop="True" PreviewDragEnter="OnDragEnter" Drop="OnDrop">
-    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Background="WhiteSmoke">
-        <Grid>
-            <GroupBox Header="Preview" Width="920" Height="620" VerticalAlignment="Top" HorizontalAlignment="Left" BorderBrush="Black">
-                <Image x:Name="PreviewImg" HorizontalAlignment="Left" Height="600" VerticalAlignment="Top" Width="900" />
-            </GroupBox>
-        </Grid>
-    </ScrollViewer>
+    x:Name="UserControl" AllowDrop="True" PreviewDragEnter="OnDragEnter" Drop="OnDrop" Background="WhiteSmoke">
+    <Grid>
+        <GroupBox Header="Preview" VerticalAlignment="Top" HorizontalAlignment="Left" BorderBrush="Black" Margin="10">
+            <Viewbox Stretch="Uniform" HorizontalAlignment="Left" VerticalAlignment="Top" MaxWidth="900"
+                     MaxHeight="600">
+                <Image x:Name="PreviewImg" ContextMenuService.ShowOnDisabled="True"
+                       ContextMenuOpening="OnContextMenuOpening" MaxWidth="900" MaxHeight="600" Width="900"
+                       Height="600">
+                    <Image.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem x:Name="SaveContextMenuItem" Header="Save Cover To File"
+                                      Click="SaveImageToFileOnClick" />
+                            <MenuItem Header="Select new Cover" Click="SelectNewCover" />
+                        </ContextMenu>
+                    </Image.ContextMenu>
+                </Image>
+            </Viewbox>
+        </GroupBox>
+    </Grid>
 </UserControl>

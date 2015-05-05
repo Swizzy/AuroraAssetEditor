@@ -139,13 +139,13 @@ namespace AuroraAssetEditor {
 
             public bool HasIconBanner { get { return EntryTable.Entries[(int)AssetType.Icon].Size > 0 || EntryTable.Entries[(int)AssetType.Banner].Size > 0; } }
 
-            private bool SetImage(Image img, int index) {
+            private bool SetImage(Image img, int index, bool useCompression) {
                 if(img == null || index > (int)AssetType.Max)
                     return false;
                 EntryTable.Entries[index].ImageData = img;
                 var data = ImageToRawArgb(img);
                 byte[] video = new byte[0], header = new byte[0];
-                if(!AuroraAssetDll.ProcessImageToAsset(ref data, img.Width, img.Height, true, ref header, ref video))
+                if(!AuroraAssetDll.ProcessImageToAsset(ref data, img.Width, img.Height, useCompression, ref header, ref video))
                     return false;
                 EntryTable.Entries[index].VideoData = video;
                 EntryTable.Entries[index].TextureHeader = header;
@@ -169,38 +169,18 @@ namespace AuroraAssetEditor {
                 target.ImageData = src.ImageData;
             }
 
-            public bool SetIcon(Image img) {
-                if(img.Width != 64 || img.Height != 64)
-                    img = new Bitmap(img, new Size(64, 64));
-                return SetImage(img, (int)AssetType.Icon);
-            }
+            public bool SetIcon(Image img, bool useCompression) { return SetImage(img, (int)AssetType.Icon, useCompression); }
 
-            public bool SetBackground(Image img) {
-                if(img.Width != 1280 || img.Height != 720)
-                    img = new Bitmap(img, new Size(1280, 720));
-                return SetImage(img, (int)AssetType.Background);
-            }
+            public bool SetBackground(Image img, bool useCompression) { return SetImage(img, (int)AssetType.Background, useCompression); }
 
-            public bool SetBanner(Image img) {
-                if(img.Width != 420 || img.Height != 96)
-                    img = new Bitmap(img, new Size(96, 420));
-                return SetImage(img, (int)AssetType.Banner);
-            }
+            public bool SetBanner(Image img, bool useCompression) { return SetImage(img, (int)AssetType.Banner, useCompression); }
 
-            public bool SetBoxart(Image img) {
-                if(img.Width != 900 || img.Height != 600)
-                    img = new Bitmap(img, new Size(900, 600));
-                return SetImage(img, (int)AssetType.Boxart);
-            }
+            public bool SetBoxart(Image img, bool useCompression) { return SetImage(img, (int)AssetType.Boxart, useCompression); }
 
-            public bool SetScreenshot(Image img, int num) {
-                if(img.Width != 1000 || img.Height != 562)
-                    img = new Bitmap(img, new Size(1000, 562));
+            public bool SetScreenshot(Image img, int num, bool useCompression) {
                 num += (int)AssetType.ScreenshotStart - 1;
-                return num <= (int)AssetType.ScreenshotEnd && SetImage(img, num);
+                return num <= (int)AssetType.ScreenshotEnd && SetImage(img, num, useCompression);
             }
-
-            public bool SetScreenshots(IEnumerable<Image> images) { return !images.Where((t, i) => !SetScreenshot(t, i + 1)).Any(); }
 
             public Image GetIcon() { return EntryTable.Entries[(int)AssetType.Icon].Size > 0 ? EntryTable.Entries[(int)AssetType.Icon].ImageData : null; }
 

@@ -9,20 +9,24 @@ namespace AuroraAssetEditor {
     using System;
     using System.Collections.Generic;
     using System.Drawing;
+    using System.Drawing.Imaging;
     using System.IO;
     using System.Linq;
     using System.Reflection;
     using System.Windows;
     using Microsoft.Win32;
+    using Size = System.Drawing.Size;
 
     /// <summary>
     ///     Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow {
-        internal const string AssetFileFilter =
-            "Game Cover/Boxart Asset File(s) (GC*.asset)|GC*.asset|Background Asset File(s) (BK*.asset)|BK*.asset|Icon/Banner Asset File(s) (GL*.asset)|GL*.asset|Screenshot Asset File(s) (SS*.asset)|SS*.asset|Aurora Asset Files (*.asset)|*.asset|All Files(*.*)|*.*";
+        private const string AssetFileFilter =
+            "Game Cover/Boxart Asset File(defaultFilename) (GC*.asset)|GC*.asset|Background Asset File(defaultFilename) (BK*.asset)|BK*.asset|Icon/Banner Asset File(defaultFilename) (GL*.asset)|GL*.asset|Screenshot Asset File(defaultFilename) (SS*.asset)|SS*.asset|Aurora Asset Files (*.asset)|*.asset|All Files(*)|*";
 
-        internal const string ImageFileFilter = "Image File(s) (*.png, *.bmp, *.jpeg, *.jpg, *.gif)|*.png;*.bmp;*.jpeg;*.jpg;*.gif|All Files (*.*)|*.*";
+        private const string ImageFileFilter =
+            "All Images|*.BMP;*.JPG;*.JPEG;*.JPE;*.GIF;*.TIF;*.TIFF;*.PNG|BMP (*.BMP)|*.BMP|JPEG (*.JPG;*.JPEG)|*.JPG;*.JPEG|GIF (*.GIF)|*.GIF|TIFF (*.TIF;*.TIFF)|*.TIF;*.TIFF|PNG (*.PNG)|*.PNG|All Files|*";
+
         private readonly BackgroundControl _background;
         private readonly BoxartControl _boxart;
         private readonly IconBannerControl _iconBanner;
@@ -86,11 +90,13 @@ namespace AuroraAssetEditor {
             var ofd = new OpenFileDialog {
                                              Title = "Select Asset to load",
                                              Filter = AssetFileFilter,
-                                             FilterIndex = 5
+                                             FilterIndex = 5,
+                                             Multiselect = true
                                          };
             if(ofd.ShowDialog() != true)
                 return;
-            LoadAsset(ofd.FileName);
+            foreach(var fileName in ofd.FileNames)
+                LoadAsset(fileName);
         }
 
         private void CreateNewOnClick(object sender, RoutedEventArgs e) {
@@ -131,12 +137,10 @@ namespace AuroraAssetEditor {
                     }
                 }
                 else if(Equals(sender, _background)) {
-                    try
-                    {
+                    try {
                         _background.Load(Image.FromFile(t));
                     }
-                    catch (Exception ex)
-                    {
+                    catch(Exception ex) {
                         SaveFileError(t, ex);
                     }
                 }
@@ -144,11 +148,74 @@ namespace AuroraAssetEditor {
                     //TODO: Implement other handling
                 }
                 else if(Equals(sender, _iconBanner)) {
-                    //TODO: Implement other handling
+                    var res = MessageBox.Show(string.Format("Is {0} an Icon? (If you select no it'defaultFilename assumed it'defaultFilename a banner)", t), "Is this an icon?",
+                                              MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.Cancel);
+                    switch(res) {
+                        case MessageBoxResult.Yes:
+                            _iconBanner.Load(Image.FromFile(t), true);
+                            break;
+                        case MessageBoxResult.No:
+                            _iconBanner.Load(Image.FromFile(t), false);
+                            break;
+                    }
                 }
             }
         }
 
         private void OnMainDrop(object sender, DragEventArgs e) { DragDrop(this, e); }
+
+        internal static void SaveToFile(Image img, string title, string defaultFilename) {
+            var sfd = new SaveFileDialog {
+                                             Title = title,
+                                             FileName = defaultFilename,
+                                             Filter = ImageFileFilter
+                                         };
+            if(sfd.ShowDialog() != true)
+                return;
+            var fmt = ImageFormat.Png;
+            var extension = Path.GetExtension(sfd.FileName);
+            if(extension != null) {
+                switch(extension.ToLower()) {
+                    case ".png":
+                        break; // already our default
+                    case ".jpg":
+                    case ".jpeg":
+                        fmt = ImageFormat.Jpeg;
+                        break;
+                    case ".bmp":
+                        fmt = ImageFormat.Bmp;
+                        break;
+                    case ".tif":
+                    case ".tiff":
+                        fmt = ImageFormat.Tiff;
+                        break;
+                    case ".gif":
+                        fmt = ImageFormat.Gif;
+                        break;
+                }
+            }
+            using(var ms = new MemoryStream()) {
+                img.Save(ms, fmt);
+                File.WriteAllBytes(sfd.FileName, ms.ToArray());
+            }
+        }
+
+        public Image LoadImage(string title, string defaultFilename, Size newSize) {
+            var ofd = new OpenFileDialog {
+                                             Title = title,
+                                             FileName = defaultFilename,
+                                             Filter = ImageFileFilter
+                                         };
+            if(ofd.ShowDialog() != true)
+                return null;
+            using(var ms = new MemoryStream(File.ReadAllBytes(ofd.FileName))) {
+                var img = Image.FromStream(ms);
+                if(!img.Size.Equals(newSize) && AutoResizeImages.IsChecked) {
+                    //TODO: Add option to honor aspect ratio
+                    img = new Bitmap(img, newSize);
+                }
+                return img;
+            }
+        }
     }
 }
