@@ -127,6 +127,7 @@ namespace AuroraAssetEditor {
             if(!e.Data.GetDataPresent(DataFormats.FileDrop))
                 return;
             var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            var askScreenshot = true;
             foreach(var t in files.Where(t => !LoadAsset(t, false))) {
                 try {
                     if(Equals(sender, _boxart))
@@ -134,16 +135,20 @@ namespace AuroraAssetEditor {
                     else if(Equals(sender, _background))
                         _background.Load(Image.FromFile(t));
                     else if(Equals(sender, _screenshots)) {
-                        if(_screenshots.SelectedExists()) { // Do we have a screenshot selected?
+                        if(askScreenshot && _screenshots.SelectedExists()) { // Do we have a screenshot selected?
                             var res = MessageBox.Show(string.Format("Do you want to replace the current Screenshot with {0}?", t), "Replace screenshot?", MessageBoxButton.YesNoCancel,
                                                       MessageBoxImage.Question, MessageBoxResult.Cancel);
-                            if(res == MessageBoxResult.Yes)
+                            if(res == MessageBoxResult.Yes) {
                                 _screenshots.Load(Image.FromFile(t), true); // We want to replace it
+                                askScreenshot = false;
+                            }
                             else if(res == MessageBoxResult.No && _screenshots.SpaceLeft()) // Do we have space for another screenshot?
                                 _screenshots.Load(Image.FromFile(t), false);
                         }
-                        else if(_screenshots.SpaceLeft())
+                        else if(_screenshots.SpaceLeft()) {
+                            askScreenshot = false; // The user probably want to add the remaining covers...
                             _screenshots.Load(Image.FromFile(t), true);
+                        }
                         else
                             MessageBox.Show("There is no space left for new screenshots :(", "No space left", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
