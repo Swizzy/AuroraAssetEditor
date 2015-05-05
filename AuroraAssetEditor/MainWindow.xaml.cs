@@ -128,36 +128,40 @@ namespace AuroraAssetEditor {
                 return;
             var files = (string[])e.Data.GetData(DataFormats.FileDrop);
             foreach(var t in files.Where(t => !LoadAsset(t, false))) {
-                if(Equals(sender, _boxart)) {
-                    try {
+                try {
+                    if(Equals(sender, _boxart))
                         _boxart.Load(Image.FromFile(t));
-                    }
-                    catch(Exception ex) {
-                        SaveFileError(t, ex);
-                    }
-                }
-                else if(Equals(sender, _background)) {
-                    try {
+                    else if(Equals(sender, _background))
                         _background.Load(Image.FromFile(t));
+                    else if(Equals(sender, _screenshots)) {
+                        if(_screenshots.SelectedExists()) { // Do we have a screenshot selected?
+                            var res = MessageBox.Show(string.Format("Do you want to replace the current Screenshot with {0}?", t), "Replace screenshot?", MessageBoxButton.YesNoCancel,
+                                                      MessageBoxImage.Question, MessageBoxResult.Cancel);
+                            if(res == MessageBoxResult.Yes)
+                                _screenshots.Load(Image.FromFile(t), true); // We want to replace it
+                            else if(res == MessageBoxResult.No && _screenshots.SpaceLeft()) // Do we have space for another screenshot?
+                                _screenshots.Load(Image.FromFile(t), false);
+                        }
+                        else if(_screenshots.SpaceLeft())
+                            _screenshots.Load(Image.FromFile(t), true);
+                        else
+                            MessageBox.Show("There is no space left for new screenshots :(", "No space left", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
-                    catch(Exception ex) {
-                        SaveFileError(t, ex);
+                    else if(Equals(sender, _iconBanner)) {
+                        var res = MessageBox.Show(string.Format("Is {0} an Icon? (If you select no it's assumed it's a banner)", t), "Is this an icon?", MessageBoxButton.YesNoCancel,
+                                                  MessageBoxImage.Question, MessageBoxResult.Cancel);
+                        switch(res) {
+                            case MessageBoxResult.Yes:
+                                _iconBanner.Load(Image.FromFile(t), true);
+                                break;
+                            case MessageBoxResult.No:
+                                _iconBanner.Load(Image.FromFile(t), false);
+                                break;
+                        }
                     }
                 }
-                else if(Equals(sender, _screenshots)) {
-                    //TODO: Implement other handling
-                }
-                else if(Equals(sender, _iconBanner)) {
-                    var res = MessageBox.Show(string.Format("Is {0} an Icon? (If you select no it'defaultFilename assumed it'defaultFilename a banner)", t), "Is this an icon?",
-                                              MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.Cancel);
-                    switch(res) {
-                        case MessageBoxResult.Yes:
-                            _iconBanner.Load(Image.FromFile(t), true);
-                            break;
-                        case MessageBoxResult.No:
-                            _iconBanner.Load(Image.FromFile(t), false);
-                            break;
-                    }
+                catch(Exception ex) {
+                    SaveFileError(t, ex);
                 }
             }
         }

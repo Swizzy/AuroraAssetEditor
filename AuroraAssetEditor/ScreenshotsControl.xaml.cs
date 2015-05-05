@@ -95,8 +95,10 @@ namespace AuroraAssetEditor {
                     index = i;
                     break;
                 }
-                if(index == -1)
-                    return;
+            }
+            if(index == -1) {
+                MessageBox.Show("There is no space left for new screenshots :(", "No space left", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
             }
             _assetFile.SetScreenshot(img, index + 1, _main.UseCompression.IsChecked);
             _screenshots[index] = img;
@@ -111,12 +113,7 @@ namespace AuroraAssetEditor {
             return false;
         }
 
-        public bool SpaceLeft() {
-            var ret = false;
-            foreach(var t in _screenshots.Where(t => t == null))
-                ret = true;
-            return ret;
-        }
+        public bool SpaceLeft() { return _screenshots.Any(t => t == null); }
 
         private void CBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             var disp = CBox.SelectedItem as ScreenshotDisplay;
@@ -146,10 +143,10 @@ namespace AuroraAssetEditor {
 
         private void AddNewScreenshot(object sender, RoutedEventArgs e) {
             var imglist = _main.LoadImages("Select new screenshot(s)", "screenshot.png", new Size(1000, 562));
-            if(imglist != null) {
-                foreach(var img in imglist)
-                    Load(img, false);
-            }
+            if(imglist == null)
+                return;
+            foreach(var img in imglist)
+                Load(img, false);
         }
 
         private void OnContextMenuOpening(object sender, ContextMenuEventArgs e) {
