@@ -20,7 +20,7 @@
                         <ContextMenu>
                             <MenuItem x:Name="SaveIconContextMenuItem" Header="Save Icon To File"
                                       Click="SaveIconToFileOnClick" />
-                            <MenuItem Header="Select new Cover" Click="SelectNewIcon" />
+                            <MenuItem Header="Select new Icon" Click="SelectNewIcon" />
                         </ContextMenu>
                     </Image.ContextMenu>
                 </Image>
@@ -35,7 +35,7 @@
                         <ContextMenu>
                             <MenuItem x:Name="SaveBannerContextMenuItem" Header="Save Banner To File"
                                       Click="SaveBannerToFileOnClick" />
-                            <MenuItem Header="Select new Cover" Click="SelectNewBanner" />
+                            <MenuItem Header="Select new Banner" Click="SelectNewBanner" />
                         </ContextMenu>
                     </Image.ContextMenu>
                 </Image>

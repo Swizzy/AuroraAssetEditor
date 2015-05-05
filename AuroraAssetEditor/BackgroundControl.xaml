@@ -15,7 +15,7 @@
                         <ContextMenu>
                             <MenuItem x:Name="SaveContextMenuItem" Header="Save Background To File"
                                       Click="SaveImageToFileOnClick" />
-                            <MenuItem Header="Select new Cover" Click="SelectNewCover" />
+                            <MenuItem Header="Select new Background" Click="SelectNewBackground" />
                         </ContextMenu>
                     </Image.ContextMenu>
                 </Image>

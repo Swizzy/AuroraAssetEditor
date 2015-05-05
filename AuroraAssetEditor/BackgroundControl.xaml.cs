@@ -78,7 +78,7 @@ namespace AuroraAssetEditor {
 
         private void SaveImageToFileOnClick(object sender, RoutedEventArgs e) { MainWindow.SaveToFile(_assetFile.GetBackground(), "Select where to save the Background", "background.png"); }
 
-        private void SelectNewCover(object sender, RoutedEventArgs e) {
+        private void SelectNewBackground(object sender, RoutedEventArgs e) {
             var img = _main.LoadImage("Select new background", "background.png", new Size(1280, 720));
             if(img != null)
                 Load(img);
