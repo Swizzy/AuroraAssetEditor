@@ -217,5 +217,28 @@ namespace AuroraAssetEditor {
                 return img;
             }
         }
+
+        public IEnumerable<Image> LoadImages(string title, string defaultFilename, Size newSize) {
+            var ofd = new OpenFileDialog {
+                                             Title = title,
+                                             FileName = defaultFilename,
+                                             Filter = ImageFileFilter,
+                                             Multiselect = true
+                                         };
+            if(ofd.ShowDialog() != true)
+                return null;
+            var ret = new List<Image>();
+            foreach(var fileName in ofd.FileNames) {
+                using(var ms = new MemoryStream(File.ReadAllBytes(fileName))) {
+                    var img = Image.FromStream(ms);
+                    if(!img.Size.Equals(newSize) && AutoResizeImages.IsChecked) {
+                        //TODO: Add option to honor aspect ratio
+                        img = new Bitmap(img, newSize);
+                    }
+                    ret.Add(img);
+                }
+            }
+            return ret.ToArray();
+        }
     }
 }

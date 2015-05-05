@@ -23,8 +23,8 @@ namespace AuroraAssetEditor {
     public partial class ScreenshotsControl {
         private readonly MainWindow _main;
         private AuroraAsset.AssetFile _assetFile;
-        private Image[] _screenshots;
         private bool _havePreview;
+        private Image[] _screenshots;
 
         public ScreenshotsControl(MainWindow main) {
             InitializeComponent();
@@ -101,6 +101,7 @@ namespace AuroraAssetEditor {
             _assetFile.SetScreenshot(img, index + 1, _main.UseCompression.IsChecked);
             _screenshots[index] = img;
             SetPreview(img);
+            CBox.SelectedIndex = index;
         }
 
         public bool SelectedExists() {
@@ -144,9 +145,16 @@ namespace AuroraAssetEditor {
         }
 
         private void AddNewScreenshot(object sender, RoutedEventArgs e) {
-            var img = _main.LoadImage("Select new screenshot", "screenshot.png", new Size(1000, 562));
-            if(img != null)
-                Load(img, false);
+            var imglist = _main.LoadImages("Select new screenshot(s)", "screenshot.png", new Size(1000, 562));
+            if(imglist != null) {
+                foreach(var img in imglist)
+                    Load(img, false);
+            }
+        }
+
+        private void OnContextMenuOpening(object sender, ContextMenuEventArgs e) {
+            SaveContextMenuItem.IsEnabled = _havePreview;
+            RemoveContextMenuItem.IsEnabled = _havePreview;
         }
 
         private class ScreenshotDisplay {
@@ -157,11 +165,6 @@ namespace AuroraAssetEditor {
             public int Index { get { return _index; } }
 
             public override string ToString() { return string.Format("Screenshot {0}", _index + 1); }
-        }
-
-        private void OnContextMenuOpening(object sender, ContextMenuEventArgs e) {
-            SaveContextMenuItem.IsEnabled = _havePreview;
-            RemoveContextMenuItem.IsEnabled = _havePreview;
         }
     }
 }

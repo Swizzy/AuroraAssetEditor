@@ -29,7 +29,7 @@
                             <MenuItem x:Name="SaveContextMenuItem" Header="Save Screenshot To File"
                                       Click="SaveImageToFileOnClick" />
                             <MenuItem Header="Replace Screenshot" Click="SelectNewScreenshot" />
-                            <MenuItem Header="Add new Screenshot" Click="AddNewScreenshot" />
+                            <MenuItem Header="Add new Screenshot(s)" Click="AddNewScreenshot" />
                             <MenuItem x:Name="RemoveContextMenuItem" Header="Remove Screenshot"
                                       Click="RemoveScreenshot" />
                         </ContextMenu>
