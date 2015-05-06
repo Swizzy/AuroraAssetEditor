@@ -1,0 +1,158 @@
+//--------------------------------------
+//--- 010 Editor v5.0.2 Binary Template
+//
+// File: AuroraAssetTemplate.bt
+// Author: MasterRowen & Swizzy
+// Revision: 1
+// Purpose: Aurora's .asset files
+//--------------------------------------
+#define ASSET_SCREENSHOT_MAX    20
+
+typedef enum {
+    ASSET_ICON,
+    ASSET_BANNER,
+    ASSET_BOXART, // Covers basically
+    ASSET_SLOT,
+    ASSET_BACKGROUND,
+    ASSET_SCREENSHOT_START,
+    ASSET_SCREENSHOT = ASSET_SCREENSHOT_START,
+    ASSET_SCREENSHOT_END = ASSET_SCREENSHOT_START + ASSET_SCREENSHOT_MAX,    
+    ASSET_END = ASSET_SCREENSHOT_END,
+    ASSET_MAX = ASSET_END
+} ASSET_TYPE;
+
+typedef struct {
+    DWORD dwMagic; // Should be 'RXEA'
+    DWORD dwVersion; // Should be 1
+    DWORD dwDataSize; 
+} ASSET_PACK_HEADER;
+
+typedef struct {
+    DWORD Common;
+    DWORD ReferenceCount; // Should be 0
+    DWORD Fence; // Should be 0
+    DWORD ReadFence; // Should be 0
+    DWORD Identifier; // Should be 0
+    DWORD BaseFlush; // Should be 0xFFFF0000
+    DWORD MipFlush; // Should be 0xFFFF0000
+    union {
+        struct {
+            struct {
+                DWORD Tiled             : 1;    // BOOL
+                DWORD Pitch             : 9;    // DWORD
+                DWORD                   : 1;
+                DWORD                   : 2;
+                DWORD ClampZ            : 3;    // GPUCLAMP
+                DWORD ClampY            : 3;    // GPUCLAMP
+                DWORD ClampX            : 3;    // GPUCLAMP
+                DWORD SignW             : 2;    // GPUSIGN
+                DWORD SignZ             : 2;    // GPUSIGN
+                DWORD SignY             : 2;    // GPUSIGN
+                DWORD SignX             : 2;    // GPUSIGN
+                DWORD Type              : 2;    // GPUCONSTANTTYPE
+            } GPU_FETCH_CONSTANT_0;
+            struct {
+                DWORD BaseAddress       : 20;   // DWORD
+                DWORD ClampPolicy       : 1;    // GPUCLAMPPOLICY
+                DWORD Stack             : 1;    // BOOL
+                DWORD RequestSize       : 2;    // GPUREQUESTSIZE
+                DWORD Endian            : 2;    // GPUENDIAN
+                DWORD DataFormat        : 6;    // GPUTEXTUREFORMAT
+            } GPU_FETCH_CONSTANT_1;
+            union
+            {
+                struct {
+                    DWORD               : 8;
+                    DWORD Width         : 24;   // DWORD
+                } OneD;
+                struct {
+                    DWORD               : 6;
+                    DWORD Height        : 13;   // DWORD
+                    DWORD Width         : 13;   // DWORD
+                } TwoD;
+                struct {
+                    DWORD Depth         : 10;   // DWORD
+                    DWORD Height        : 11;   // DWORD  
+                    DWORD Width         : 11;   // DWORD
+                } ThreeD;
+                struct {
+                    DWORD Depth         : 6;   // DWORD
+                    DWORD Height        : 13;   // DWORD  
+                    DWORD Width         : 13;   // DWORD
+                } Stack;
+            } Size;
+            struct {
+                DWORD BorderSize        : 1;    // DWORD
+                DWORD                   : 3;
+                DWORD AnisoFilter       : 3;    // GPUANISOFILTER
+                DWORD MipFilter         : 2;    // GPUMIPFILTER
+                DWORD MinFilter         : 2;    // GPUMINMAGFILTER
+                DWORD MagFilter         : 2;    // GPUMINMAGFILTER
+                INT   ExpAdjust         : 6;    // int
+                DWORD SwizzleW          : 3;    // GPUSWIZZLE
+                DWORD SwizzleZ          : 3;    // GPUSWIZZLE
+                DWORD SwizzleY          : 3;    // GPUSWIZZLE
+                DWORD SwizzleX          : 3;    // GPUSWIZZLE
+                DWORD NumFormat         : 1;    // GPUNUMFORMAT
+            } GPUTEXTURE_FETCH_CONSTANT_3;
+            struct {
+                INT   GradExpAdjustV    : 5;    // int
+                INT   GradExpAdjustH    : 5;    // int
+                INT   LODBias           : 10;   // int
+                DWORD MinAnisoWalk      : 1;    // BOOL
+                DWORD MagAnisoWalk      : 1;    // BOOL
+                DWORD MaxMipLevel       : 4;    // DWORD
+                DWORD MinMipLevel       : 4;    // DWORD
+                DWORD VolMinFilter      : 1;    // GPUMINMAGFILTER
+                DWORD VolMagFilter      : 1;    // GPUMINMAGFILTER
+            } GPUTEXTURE_FETCH_CONSTANT_4;
+            struct {
+                DWORD MipAddress        : 20;   // DWORD
+                DWORD PackedMips        : 1;    // BOOL
+                DWORD Dimension         : 2;    // GPUDIMENSION
+                INT   AnisoBias         : 4;    // int
+                DWORD TriClamp          : 2;    // GPUTRICLAMP
+                DWORD ForceBCWToMax     : 1;    // BOOL
+                DWORD BorderColor       : 2;    // GPUBORDERCOLOR            
+            } GPUTEXTURE_FETCH_CONSTANT_5;
+        } GPUTEXTURE_FETCH_CONSTANT;
+        DWORD dword[6];
+    } GPU_FETCH_CONSTANT;
+} ASSET_PACK_TEXTURE_HEADER;
+
+typedef struct {
+    DWORD                       Offset;
+    DWORD                       Size;
+    DWORD                       ExtendedInfo; // It's a pointer, ignore the value, or save it as 0
+    ASSET_PACK_TEXTURE_HEADER   TextureHeader;
+} ASSET_PACK_ENTRY;
+
+typedef struct {
+    DWORD               Flags;
+    DWORD               ScreenshotCount;
+    ASSET_PACK_ENTRY    Entries[ASSET_MAX];
+} ASSET_PACK_ENTRY_TABLE;
+
+typedef struct {
+    BYTE ALPHA;
+    BYTE RED;
+    BYTE GREEN;
+    BYTE BLUE;
+} COLOR;
+
+// Actual shown data starts here
+
+ASSET_PACK_HEADER Header;
+Assert(Header.dwMagic == 0x52584541, "Invalid header Magic, expected 'RXEA'");
+Assert(Header.dwVersion == 1, "Invalid header Version, expected 1");
+ASSET_PACK_ENTRY_TABLE EntryTable;
+BYTE Padding[2048 - (FTell() % 2048)]; 
+local ASSET_TYPE x;
+for( x = 0; x < ASSET_MAX; x++ ) {
+    if( EntryTable.Entries[x].Size > 0 ) {
+        typedef struct {
+            COLOR ImageData[EntryTable.Entries[x].Size/sizeof(COLOR)];    
+        } IMAGE_DATA;
+        IMAGE_DATA Image;
+    }
+}
