@@ -27,7 +27,7 @@ namespace AuroraAssetEditor {
             "Game Cover/Boxart Asset File(defaultFilename) (GC*.asset)|GC*.asset|Background Asset File(defaultFilename) (BK*.asset)|BK*.asset|Icon/Banner Asset File(defaultFilename) (GL*.asset)|GL*.asset|Screenshot Asset File(defaultFilename) (SS*.asset)|SS*.asset|Aurora Asset Files (*.asset)|*.asset|All Files(*)|*";
 
         private const string ImageFileFilter =
-            "All Images|*.BMP;*.JPG;*.JPEG;*.JPE;*.GIF;*.TIF;*.TIFF;*.PNG|BMP (*.BMP)|*.BMP|JPEG (*.JPG;*.JPEG)|*.JPG;*.JPEG|GIF (*.GIF)|*.GIF|TIFF (*.TIF;*.TIFF)|*.TIF;*.TIFF|PNG (*.PNG)|*.PNG|All Files|*";
+            "All Supported Images|*.png;*.bmp;*.jpg;*.jpeg;*.gif;*.tif;*.tiff;|BMP (*.bmp)|*.bmp|JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|GIF (*.gif)|*.gif|TIFF (*.tif;*.tiff)|*.tiff;*.tif|PNG (*.png)|*.png|All Files|*";
 
         private readonly BackgroundControl _background;
         private readonly UIElement[] _backgroundMenu;
@@ -209,14 +209,13 @@ namespace AuroraAssetEditor {
 
         private Image GetImage(string filename, Size newSize) {
             try {
-                using(var ms = new MemoryStream(File.ReadAllBytes(filename))) {
-                    var img = Image.FromStream(ms);
-                    if(!img.Size.Equals(newSize) && AutoResizeImages.IsChecked) {
-                        //TODO: Add option to honor aspect ratio
-                        img = new Bitmap(img, newSize);
-                    }
-                    return img;
+                var ms = new MemoryStream(File.ReadAllBytes(filename));
+                var img = Image.FromStream(ms);
+                if(!img.Size.Equals(newSize) && AutoResizeImages.IsChecked) {
+                    //TODO: Add option to honor aspect ratio
+                    img = new Bitmap(img, newSize);
                 }
+                return img;
             }
             catch(Exception ex) {
                 SaveFileError(filename, ex);

@@ -132,7 +132,7 @@ namespace AuroraAssetEditor {
             var disp = CBox.SelectedItem as ScreenshotDisplay;
             if(disp == null)
                 return;
-            MainWindow.SaveToFile(_screenshots[disp.Index], "Select where to save the Screenshot", string.Format("screenshot{0}.png", disp.Index));
+            MainWindow.SaveToFile(_screenshots[disp.Index], "Select where to save the Screenshot", string.Format("screenshot{0}.png", disp.Index + 1));
         }
 
         internal void SelectNewScreenshot(object sender, RoutedEventArgs e) {
