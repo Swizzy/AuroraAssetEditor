@@ -163,8 +163,11 @@ namespace AuroraAssetEditor {
                     MessageBox.Show(string.Format("ERROR: {0} Doesn't contain any Assets", filename), "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch(Exception ex) {
-                if(showError)
-                    MessageBox.Show(string.Format("ERROR: While processing {0}{1}{2}", filename, Environment.NewLine, ex.Message), "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
+                if(!showError)
+                    return false;
+                SaveError(ex);
+                MessageBox.Show(string.Format("ERROR: While processing {0}{1}{2}See error.log for more details about this error", filename, Environment.NewLine, ex.Message), "ERROR",
+                                MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
             return true;
