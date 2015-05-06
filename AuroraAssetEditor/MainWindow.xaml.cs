@@ -116,8 +116,7 @@ namespace AuroraAssetEditor {
                                                       },
                                          new MenuItem {
                                                           Header = "Add new Screenshot(s)"
-                                                      }
-                                                      ,
+                                                      },
                                          new MenuItem {
                                                           Header = "Remove screenshot"
                                                       }
@@ -208,50 +207,62 @@ namespace AuroraAssetEditor {
                 e.Effects = DragDropEffects.None; // Ignore this one
         }
 
+        private Image GetImage(string filename, Size newSize) {
+            try {
+                using(var ms = new MemoryStream(File.ReadAllBytes(filename))) {
+                    var img = Image.FromStream(ms);
+                    if(!img.Size.Equals(newSize) && AutoResizeImages.IsChecked) {
+                        //TODO: Add option to honor aspect ratio
+                        img = new Bitmap(img, newSize);
+                    }
+                    return img;
+                }
+            }
+            catch(Exception ex) {
+                SaveFileError(filename, ex);
+                return null;
+            }
+        }
+
         internal void DragDrop(UIElement sender, DragEventArgs e) {
             if(!e.Data.GetDataPresent(DataFormats.FileDrop))
                 return;
             var files = (string[])e.Data.GetData(DataFormats.FileDrop);
             var askScreenshot = true;
             foreach(var t in files.Where(t => !LoadAsset(t, false))) {
-                try {
-                    if(Equals(sender, _boxart))
-                        _boxart.Load(Image.FromFile(t));
-                    else if(Equals(sender, _background))
-                        _background.Load(Image.FromFile(t));
-                    else if(Equals(sender, _screenshots)) {
-                        if(askScreenshot && _screenshots.SelectedExists()) { // Do we have a screenshot selected?
-                            var res = MessageBox.Show(string.Format("Do you want to replace the current Screenshot with {0}?", t), "Replace screenshot?", MessageBoxButton.YesNoCancel,
-                                                      MessageBoxImage.Question, MessageBoxResult.Cancel);
-                            if(res == MessageBoxResult.Yes) {
-                                _screenshots.Load(Image.FromFile(t), true); // We want to replace it
-                                askScreenshot = false;
-                            }
-                            else if(res == MessageBoxResult.No && _screenshots.SpaceLeft()) // Do we have space for another screenshot?
-                                _screenshots.Load(Image.FromFile(t), false);
-                        }
-                        else if(_screenshots.SpaceLeft()) {
-                            askScreenshot = false; // The user probably want to add the remaining covers...
-                            _screenshots.Load(Image.FromFile(t), true);
-                        }
-                        else
-                            MessageBox.Show("There is no space left for new screenshots :(", "No space left", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                    else if(Equals(sender, _iconBanner)) {
-                        var res = MessageBox.Show(string.Format("Is {0} an Icon? (If you select no it's assumed it's a banner)", t), "Is this an icon?", MessageBoxButton.YesNoCancel,
+                if(Equals(sender, _boxart))
+                    _boxart.Load(GetImage(t, new Size(900, 600)));
+                else if(Equals(sender, _background))
+                    _background.Load(GetImage(t, new Size(1280, 720)));
+                else if(Equals(sender, _screenshots)) {
+                    if(askScreenshot && _screenshots.SelectedExists()) { // Do we have a screenshot selected?
+                        var res = MessageBox.Show(string.Format("Do you want to replace the current Screenshot with {0}?", t), "Replace screenshot?", MessageBoxButton.YesNoCancel,
                                                   MessageBoxImage.Question, MessageBoxResult.Cancel);
-                        switch(res) {
-                            case MessageBoxResult.Yes:
-                                _iconBanner.Load(Image.FromFile(t), true);
-                                break;
-                            case MessageBoxResult.No:
-                                _iconBanner.Load(Image.FromFile(t), false);
-                                break;
+                        if(res == MessageBoxResult.Yes) {
+                            _screenshots.Load(GetImage(t, new Size(1000, 562)), true); // We want to replace it
+                            askScreenshot = false;
                         }
+                        else if(res == MessageBoxResult.No && _screenshots.SpaceLeft()) // Do we have space for another screenshot?
+                            _screenshots.Load(GetImage(t, new Size(1000, 562)), false);
                     }
+                    else if(_screenshots.SpaceLeft()) {
+                        askScreenshot = false; // The user probably want to add the remaining covers...
+                        _screenshots.Load(GetImage(t, new Size(1000, 562)), true);
+                    }
+                    else
+                        MessageBox.Show("There is no space left for new screenshots :(", "No space left", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-                catch(Exception ex) {
-                    SaveFileError(t, ex);
+                else if(Equals(sender, _iconBanner)) {
+                    var res = MessageBox.Show(string.Format("Is {0} an Icon? (If you select no it's assumed it's a banner)", t), "Is this an icon?", MessageBoxButton.YesNoCancel,
+                                              MessageBoxImage.Question, MessageBoxResult.Cancel);
+                    switch(res) {
+                        case MessageBoxResult.Yes:
+                            _iconBanner.Load(GetImage(t, new Size(64, 64)), true);
+                            break;
+                        case MessageBoxResult.No:
+                            _iconBanner.Load(GetImage(t, new Size(420, 96)), false);
+                            break;
+                    }
                 }
             }
         }
@@ -300,22 +311,7 @@ namespace AuroraAssetEditor {
                                              FileName = defaultFilename,
                                              Filter = ImageFileFilter
                                          };
-            if(ofd.ShowDialog() != true)
-                return null;
-            try {
-                using(var ms = new MemoryStream(File.ReadAllBytes(ofd.FileName))) {
-                    var img = Image.FromStream(ms);
-                    if(!img.Size.Equals(newSize) && AutoResizeImages.IsChecked) {
-                        //TODO: Add option to honor aspect ratio
-                        img = new Bitmap(img, newSize);
-                    }
-                    return img;
-                }
-            }
-            catch(Exception ex) {
-                SaveFileError(ofd.FileName, ex);
-                return null;
-            }
+            return ofd.ShowDialog() != true ? null : (GetImage(ofd.FileName, newSize));
         }
 
         public IEnumerable<Image> LoadImages(string title, string defaultFilename, Size newSize) {
@@ -325,26 +321,7 @@ namespace AuroraAssetEditor {
                                              Filter = ImageFileFilter,
                                              Multiselect = true
                                          };
-            if(ofd.ShowDialog() != true)
-                return null;
-            var ret = new List<Image>();
-            foreach(var fileName in ofd.FileNames) {
-                try {
-                    using(var ms = new MemoryStream(File.ReadAllBytes(fileName))) {
-                        var img = Image.FromStream(ms);
-                        if(!img.Size.Equals(newSize) && AutoResizeImages.IsChecked) {
-                            //TODO: Add option to honor aspect ratio
-                            img = new Bitmap(img, newSize);
-                        }
-                        ret.Add(img);
-                    }
-                }
-                catch(Exception ex) {
-                    SaveFileError(ofd.FileName, ex);
-                    return ret;
-                }
-            }
-            return ret;
+            return ofd.ShowDialog() != true ? null : ofd.FileNames.Select(fileName => GetImage(fileName, newSize));
         }
 
         private void TabChanged(object sender, SelectionChangedEventArgs e) {
