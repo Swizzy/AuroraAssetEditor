@@ -22,8 +22,8 @@ namespace AuroraAssetEditor {
     /// </summary>
     public partial class ScreenshotsControl {
         private readonly MainWindow _main;
-        private AuroraAsset.AssetFile _assetFile;
         internal bool HavePreview;
+        private AuroraAsset.AssetFile _assetFile;
         private Image[] _screenshots;
 
         public ScreenshotsControl(MainWindow main) {
@@ -39,8 +39,18 @@ namespace AuroraAssetEditor {
 
         public void Save() {
             var sfd = new SaveFileDialog();
-            if(sfd.ShowDialog() == true)
-                File.WriteAllBytes(sfd.FileName, _assetFile.FileData);
+            if(sfd.ShowDialog() != true)
+                return;
+            var index = 1;
+            foreach(var img in _screenshots.Where(img => img != null)) { // Loop screenshots adding them in the order the user wants them with no interruption
+                if (!img.Equals(_assetFile.GetScreenshot(index))) // Don't replace it if it's already where we want it to be
+                    _assetFile.SetScreenshot(img, index, _main.UseCompression.IsChecked); // Add screenshot with current settings
+                index++; // Increment index so we put next image in next slot
+            }
+            if (index - 1 < _screenshots.Length) // Do we have any slots that are not used?
+                for (;index - 1 < _screenshots.Length; index++) // Loop remaining slots
+                    _assetFile.SetScreenshot(null, index, false); // Remove unused slots
+            File.WriteAllBytes(sfd.FileName, _assetFile.FileData);
         }
 
         public void Reset() {
