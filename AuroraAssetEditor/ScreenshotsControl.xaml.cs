@@ -37,20 +37,28 @@ namespace AuroraAssetEditor {
             CBox.SelectedIndex = 0;
         }
 
+        public bool HaveScreenshots { get { return _screenshots.Any(t => t != null); } }
+
         public void Save() {
             var sfd = new SaveFileDialog();
             if(sfd.ShowDialog() != true)
                 return;
+            Save(sfd.FileName);
+        }
+
+        public void Save(string filename) {
             var index = 1;
             foreach(var img in _screenshots.Where(img => img != null)) { // Loop screenshots adding them in the order the user wants them with no interruption
-                if (!img.Equals(_assetFile.GetScreenshot(index))) // Don't replace it if it's already where we want it to be
+                if(!img.Equals(_assetFile.GetScreenshot(index))) // Don't replace it if it's already where we want it to be
                     _assetFile.SetScreenshot(img, index, _main.UseCompression.IsChecked); // Add screenshot with current settings
                 index++; // Increment index so we put next image in next slot
             }
-            if (index - 1 < _screenshots.Length) // Do we have any slots that are not used?
-                for (;index - 1 < _screenshots.Length; index++) // Loop remaining slots
+            if(index - 1 < _screenshots.Length) // Do we have any slots that are not used?
+            {
+                for(; index - 1 < _screenshots.Length; index++) // Loop remaining slots
                     _assetFile.SetScreenshot(null, index, false); // Remove unused slots
-            File.WriteAllBytes(sfd.FileName, _assetFile.FileData);
+            }
+            File.WriteAllBytes(filename, _assetFile.FileData);
         }
 
         public void Reset() {

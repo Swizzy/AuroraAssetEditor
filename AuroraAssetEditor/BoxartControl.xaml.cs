@@ -14,15 +14,16 @@ namespace AuroraAssetEditor {
     using System.Windows.Media.Imaging;
     using Microsoft.Win32;
     using Image = System.Drawing.Image;
+    using Size = System.Drawing.Size;
 
     /// <summary>
     ///     Interaction logic for BoxartControl.xaml
     /// </summary>
     public partial class BoxartControl {
         private readonly MainWindow _main;
+        internal bool HavePreview;
         private AuroraAsset.AssetFile _assetFile;
         private MemoryStream _memoryStream;
-        internal bool HavePreview;
 
         public BoxartControl(MainWindow main) {
             InitializeComponent();
@@ -33,8 +34,10 @@ namespace AuroraAssetEditor {
         public void Save() {
             var sfd = new SaveFileDialog();
             if(sfd.ShowDialog() == true)
-                File.WriteAllBytes(sfd.FileName, _assetFile.FileData);
+                Save(sfd.FileName);
         }
+
+        public void Save(string filename) { File.WriteAllBytes(filename, _assetFile.FileData); }
 
         public void Reset() {
             SetPreview(null);
@@ -77,7 +80,7 @@ namespace AuroraAssetEditor {
         internal void SaveImageToFileOnClick(object sender, RoutedEventArgs e) { MainWindow.SaveToFile(_assetFile.GetBoxart(), "Select where to save the Cover", "cover.png"); }
 
         internal void SelectNewCover(object sender, RoutedEventArgs e) {
-            var img = _main.LoadImage("Select new cover", "cover.png", new System.Drawing.Size(900, 600));
+            var img = _main.LoadImage("Select new cover", "cover.png", new Size(900, 600));
             if(img != null)
                 Load(img);
         }

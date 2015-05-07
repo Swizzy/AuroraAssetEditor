@@ -1,0 +1,19 @@
+﻿<Window x:Class="AuroraAssetEditor.InputDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        SizeToContent="WidthAndHeight" WindowStartupLocation="CenterOwner"
+        ContentRendered="Window_ContentRendered">
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TextBlock Name="InfoLabel" Grid.Row="0" x:FieldModifier="private" HorizontalAlignment="Left">Question:</TextBlock>
+        <TextBox Name="ValueBox" Grid.Row="1" MinWidth="100" x:FieldModifier="private" HorizontalAlignment="Stretch">Value</TextBox>
+        <WrapPanel Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" Margin="0,15,0,0" VerticalAlignment="Bottom">
+            <Button IsDefault="True" Click="btnDialogOk_Click" MinWidth="60" Margin="0,0,10,0">_Ok</Button>
+            <Button IsCancel="True" MinWidth="60">_Cancel</Button>
+        </WrapPanel>
+    </Grid>
+</Window>

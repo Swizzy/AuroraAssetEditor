@@ -17,6 +17,7 @@ namespace AuroraAssetEditor {
     using System.Windows.Controls;
     using System.Windows.Input;
     using Microsoft.Win32;
+    using Ookii.Dialogs.Wpf;
     using Image = System.Drawing.Image;
     using Size = System.Drawing.Size;
 
@@ -367,8 +368,31 @@ namespace AuroraAssetEditor {
         private void AdvancedModeCanExecute(object sender, CanExecuteRoutedEventArgs e) { e.CanExecute = e.Handled = true; }
 
         private void AdvancedModeOnExecuted(object sender, ExecutedRoutedEventArgs e) {
-            foreach (var mitem in SettingsMenu.Items)
+            foreach(var mitem in SettingsMenu.Items)
                 ((MenuItem)mitem).IsEnabled = true;
+        }
+
+        private void SaveAllAssetsOnClick(object sender, RoutedEventArgs e) {
+            var ipd = new InputDialog(this, "Please specify TitleID:");
+            if(ipd.ShowDialog() != true || string.IsNullOrWhiteSpace(ipd.Value))
+                return;
+            var fsd = new VistaFolderBrowserDialog {
+                                                       Description = "Select where to save the asset files"
+                                                   };
+            if(fsd.ShowDialog(this) != true)
+                return;
+            var filename = Path.Combine(fsd.SelectedPath, string.Format("GC{0}.asset", ipd.Value));
+            if(_boxart.HavePreview || !File.Exists(filename))
+                _boxart.Save(filename);
+            filename = Path.Combine(fsd.SelectedPath, string.Format("BK{0}.asset", ipd.Value));
+            if(_background.HavePreview || !File.Exists(filename))
+                _background.Save(filename);
+            filename = Path.Combine(fsd.SelectedPath, string.Format("GL{0}.asset", ipd.Value));
+            if(_iconBanner.HaveBanner || _iconBanner.HaveIcon || !File.Exists(filename))
+                _iconBanner.Save(filename);
+            filename = Path.Combine(fsd.SelectedPath, string.Format("SS{0}.asset", ipd.Value));
+            if(_screenshots.HaveScreenshots || !File.Exists(filename))
+                _screenshots.Save(filename);
         }
     }
 

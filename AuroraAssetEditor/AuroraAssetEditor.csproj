@@ -55,6 +55,10 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Ookii.Dialogs.Wpf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0c15020868fd6249, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\Ookii.Dialogs.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
@@ -76,6 +80,9 @@
     <Compile Include="IconBannerControl.xaml.cs">
       <DependentUpon>IconBannerControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="InputDialog.xaml.cs">
+      <DependentUpon>InputDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ScreenshotsControl.xaml.cs">
       <DependentUpon>ScreenshotsControl.xaml</DependentUpon>
     </Compile>
@@ -88,6 +95,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="IconBannerControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="InputDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -131,6 +142,14 @@
     <Resource Include="Resources\Placeholders\icon.png" />
     <Resource Include="Resources\Placeholders\background.png" />
     <Resource Include="Resources\Placeholders\screenshot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Ookii.Dialogs.Wpf.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Ookii.Dialogs.Wpf_license.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -34,7 +34,11 @@ namespace AuroraAssetEditor {
         public void Save() {
             var sfd = new SaveFileDialog();
             if(sfd.ShowDialog() == true)
-                File.WriteAllBytes(sfd.FileName, _assetFile.FileData);
+                Save(sfd.FileName);
+        }
+
+        public void Save(string filename) {
+            File.WriteAllBytes(filename, _assetFile.FileData);
         }
 
         public void Reset() {
