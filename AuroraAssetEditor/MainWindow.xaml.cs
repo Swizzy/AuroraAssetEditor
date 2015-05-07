@@ -15,6 +15,7 @@ namespace AuroraAssetEditor {
     using System.Reflection;
     using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Input;
     using Microsoft.Win32;
     using Image = System.Drawing.Image;
     using Size = System.Drawing.Size;
@@ -40,6 +41,8 @@ namespace AuroraAssetEditor {
 
         public MainWindow(IEnumerable<string> args) {
             InitializeComponent();
+            foreach(var mitem in SettingsMenu.Items)
+                ((MenuItem)mitem).IsEnabled = false;
             var ver = Assembly.GetAssembly(typeof(MainWindow)).GetName().Version;
             Title = string.Format(Title, ver.Major, ver.Minor);
 
@@ -360,5 +363,20 @@ namespace AuroraAssetEditor {
                 ((MenuItem)EditMenu.Items[3]).IsEnabled = _screenshots.HavePreview;
             }
         }
+
+        private void AdvancedModeCanExecute(object sender, CanExecuteRoutedEventArgs e) { e.CanExecute = e.Handled = true; }
+
+        private void AdvancedModeOnExecuted(object sender, ExecutedRoutedEventArgs e) {
+            foreach (var mitem in SettingsMenu.Items)
+                ((MenuItem)mitem).IsEnabled = true;
+        }
+    }
+
+    public static class CustomCommands {
+        public static readonly RoutedUICommand AdvancedMode = new RoutedUICommand("AdvancedMode", "AdvancedMode", typeof(CustomCommands), new InputGestureCollection {
+                                                                                                                                                                         new KeyGesture(Key.F12,
+                                                                                                                                                                                        ModifierKeys
+                                                                                                                                                                                            .Control)
+                                                                                                                                                                     });
     }
 }

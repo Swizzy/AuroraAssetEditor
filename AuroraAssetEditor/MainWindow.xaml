@@ -2,7 +2,12 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Aurora Asset Editor v{0}.{1} by Swizzy thanks to MaesterRowen" MinHeight="350" MinWidth="550"
+        xmlns:self="clr-namespace:AuroraAssetEditor"
         Width="550" Height="350" AllowDrop="True" PreviewDragEnter="OnDragEnter" Drop="OnMainDrop">
+    <Window.CommandBindings>
+        <CommandBinding Command="self:CustomCommands.AdvancedMode" CanExecute="AdvancedModeCanExecute"
+                        Executed="AdvancedModeOnExecuted" />
+    </Window.CommandBindings>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -12,21 +17,22 @@
             <MenuItem Header="File">
                 <MenuItem Header="Create New Asset File" Click="CreateNewOnClick" />
                 <MenuItem Header="Load Asset File" Click="LoadAssetOnClick" />
-                <Separator/>
+                <Separator />
                 <MenuItem Header="Save Boxart/Cover Asset" Click="SaveBoxartOnClick" />
                 <MenuItem Header="Save Background Asset" Click="SaveBackgroundOnClick" />
                 <MenuItem Header="Save Screenshots Asset" Click="SaveScreenshotsOnClick" />
                 <MenuItem Header="Save Icon/Banner Asset" Click="SaveIconBannerOnClick" />
-                <Separator/>
-                <MenuItem Header="Exit" Click="ExitOnClick"/>
+                <Separator />
+                <MenuItem Header="Exit" Click="ExitOnClick" />
             </MenuItem>
-            <MenuItem Header="Settings">
-                <MenuItem x:Name="AutoResizeImages"  Header="Auto Resize Images" IsCheckable="True" IsChecked="True" />
-                <MenuItem x:Name="UseCompression"  Header="Use Compression" IsCheckable="True" IsChecked="True" />
+            <MenuItem Header="Settings" x:Name="SettingsMenu">
+                <MenuItem x:Name="AutoResizeImages" Header="Auto Resize Images" IsCheckable="True" IsChecked="True" />
+                <MenuItem x:Name="UseCompression" Header="Use Compression" IsCheckable="True" IsChecked="True" />
             </MenuItem>
-            <MenuItem Header="Edit" x:Name="EditMenu" SubmenuOpened="EditMenuOpened"/>
+            <MenuItem Header="Edit" x:Name="EditMenu" SubmenuOpened="EditMenuOpened" />
         </Menu>
-        <TabControl Grid.Row="1" HorizontalAlignment="Stretch" Margin="10" VerticalAlignment="Stretch" SelectionChanged="TabChanged">
+        <TabControl Grid.Row="1" HorizontalAlignment="Stretch" Margin="10" VerticalAlignment="Stretch"
+                    SelectionChanged="TabChanged">
             <TabItem Header="Boxart/Cover" x:Name="BoxartTab" x:FieldModifier="private" />
             <TabItem Header="Background" x:Name="BackgroundTab" x:FieldModifier="private" />
             <TabItem Header="Icon/Banner" x:Name="IconBannerTab" x:FieldModifier="private" />
