@@ -132,8 +132,12 @@ namespace AuroraAssetEditor {
 
             #endregion
 
-            foreach(var arg in args.Where(File.Exists))
-                LoadAsset(arg);
+            foreach(var arg in args.Where(File.Exists)) {
+                if(VerifyAuroraMagic(arg))
+                    LoadAuroraAsset(arg);
+                else
+                    LoadFsdAsset(arg);
+            }
         }
 
         private static void SaveError(Exception ex) { File.AppendAllText("error.log", string.Format("[{0}]:{2}{1}{2}", DateTime.Now, ex, Environment.NewLine)); }
@@ -144,7 +148,7 @@ namespace AuroraAssetEditor {
                             MessageBoxImage.Error);
         }
 
-        private bool LoadAsset(string filename, bool showError = true) {
+        private void LoadAuroraAsset(string filename) {
             try {
                 var asset = new AuroraAsset.AssetFile(File.ReadAllBytes(filename));
                 if(asset.HasBoxArt) {
@@ -167,14 +171,56 @@ namespace AuroraAssetEditor {
                     MessageBox.Show(string.Format("ERROR: {0} Doesn't contain any Assets", filename), "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch(Exception ex) {
-                if(!showError)
-                    return false;
                 SaveError(ex);
-                MessageBox.Show(string.Format("ERROR: While processing {0}{1}{2}See error.log for more details about this error", filename, Environment.NewLine, ex.Message), "ERROR",
+                MessageBox.Show(string.Format("ERROR: While processing {0}{1}{2}{1}See error.log for more details about this error", filename, Environment.NewLine, ex.Message), "ERROR",
                                 MessageBoxButton.OK, MessageBoxImage.Error);
-                return false;
             }
-            return true;
+        }
+
+        private void LoadFsdAsset(string filename) {
+            try {
+                var asset = new FsdAsset(File.ReadAllBytes(filename));
+                var img = asset.GetBoxart();
+                if(img != null) {
+                    _boxart.Load(img);
+                    BoxartTab.IsSelected = true;
+                }
+                img = asset.GetBackground();
+                if(img != null) {
+                    _background.Load(img);
+                    BackgroundTab.IsSelected = true;
+                }
+                img = asset.GetIcon();
+                if(img != null) {
+                    _iconBanner.Load(img, true);
+                    IconBannerTab.IsSelected = true;
+                }
+                img = asset.GetBanner();
+                if(img != null) {
+                    _iconBanner.Load(img, false);
+                    IconBannerTab.IsSelected = true;
+                }
+                var screenshots = asset.GetScreenshots();
+                if(screenshots.Length > 0) {
+                    foreach(var ss in screenshots) {
+                        if(_screenshots.SpaceLeft())
+                            _screenshots.Load(ss, false);
+                        else {
+                            MessageBox.Show("ERROR: Not enough space to fit all screenshots, please clear current screenshots and load the FSD asset again...", "ERROR", MessageBoxButton.OK,
+                                            MessageBoxImage.Error);
+                            return;
+                        }
+                    }
+                    ScreenshotsTab.IsSelected = true;
+                }
+                else
+                    MessageBox.Show(string.Format("ERROR: {0} Doesn't contain any Assets", filename), "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch(Exception ex) {
+                SaveError(ex);
+                MessageBox.Show(string.Format("ERROR: While processing {0}{1}{2}{1}See error.log for more details about this error", filename, Environment.NewLine, ex.Message), "ERROR",
+                                MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void LoadAssetOnClick(object sender, RoutedEventArgs e) {
@@ -186,8 +232,19 @@ namespace AuroraAssetEditor {
                                          };
             if(ofd.ShowDialog() != true)
                 return;
-            foreach(var fileName in ofd.FileNames)
-                LoadAsset(fileName);
+            foreach(var fileName in ofd.FileNames) {
+                if(VerifyAuroraMagic(fileName))
+                    LoadAuroraAsset(fileName);
+                else
+                    LoadFsdAsset(fileName);
+            }
+        }
+
+        private static bool VerifyAuroraMagic(string fileName) {
+            using(var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read)) {
+                using(var br = new BinaryReader(stream))
+                    return br.ReadUInt32() == 0x41455852; /* RXEA in LittleEndian format */
+            }
         }
 
         private void CreateNewOnClick(object sender, RoutedEventArgs e) {
@@ -235,8 +292,12 @@ namespace AuroraAssetEditor {
                 return;
             var files = (string[])e.Data.GetData(DataFormats.FileDrop);
             var askScreenshot = true;
-            foreach(var t in files.Where(t => !LoadAsset(t, false))) {
-                if(Equals(sender, _boxart))
+            foreach(var t in files) {
+                if(VerifyAuroraMagic(t))
+                    LoadAuroraAsset(t);
+                if(VerifyFsdMagic(t))
+                    LoadFsdAsset(t);
+                else if(Equals(sender, _boxart))
                     _boxart.Load(GetImage(t, new Size(900, 600)));
                 else if(Equals(sender, _background))
                     _background.Load(GetImage(t, new Size(1280, 720)));
@@ -270,6 +331,13 @@ namespace AuroraAssetEditor {
                             break;
                     }
                 }
+            }
+        }
+
+        private static bool VerifyFsdMagic(string fileName) {
+            using(var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read)) {
+                using(var br = new BinaryReader(stream))
+                    return br.ReadUInt32() == 0x41445346; /* FSDA in LittleEndian format */
             }
         }
 

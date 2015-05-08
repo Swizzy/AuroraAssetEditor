@@ -77,6 +77,7 @@
     </ApplicationDefinition>
     <Compile Include="AuroraAsset.cs" />
     <Compile Include="AuroraAssetDll.cs" />
+    <Compile Include="FSDAsset.cs" />
     <Compile Include="IconBannerControl.xaml.cs">
       <DependentUpon>IconBannerControl.xaml</DependentUpon>
     </Compile>
