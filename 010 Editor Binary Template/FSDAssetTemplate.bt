@@ -1,0 +1,48 @@
+//--------------------------------------
+//--- 010 Editor v5.0.2 Binary Template
+//
+// File: FSDAssetTemplate.bt
+// Author: Swizzy, Special thanks to MaesterRowen for providing the information within
+// Revision: 1
+// Purpose: FSD's .asset files
+//--------------------------------------
+
+typedef enum {
+    Thumbnail   = 0x01,
+    Background  = 0x02,
+    Banner      = 0x04,
+    Boxart      = 0x08,
+    Preview     = 0x10,
+    Screenshot  = 0x20,
+    Slot        = 0x40,
+    FullCover   = 0x80
+} CONTENT_ASSET_TYPES;
+
+typedef struct {
+    DWORD Magic;
+    DWORD Version;
+    DWORD Reserved;
+    DWORD AssetFlags;
+    DWORD AssetCount;
+    DWORD ScreenshotCount;
+} CONTENT_ASSET_HEADER;
+
+typedef struct {
+    CONTENT_ASSET_TYPES AssetType;
+    DWORD Offset;
+    DWORD Size;
+    DWORD TotalSize;
+} CONTENT_ASSET_ENTRY;
+
+typedef struct _CONTENT_ASSET_SCREENSHOT_ENTRY {
+        DWORD Offset;
+        DWORD Size;
+        DWORD TotalSize;
+        DWORD Reserved;
+} CONTENT_ASSET_SCREENSHOT_ENTRY;
+
+CONTENT_ASSET_HEADER Header;
+Assert(Header.Magic == 0x46534441, "Invalid header Magic, expected 'RXEA'");
+Assert(Header.Version == 1, "Invalid header Version, expected 1");
+CONTENT_ASSET_ENTRY Entries[10];
+CONTENT_ASSET_SCREENSHOT_ENTRY Screenshots[20];
