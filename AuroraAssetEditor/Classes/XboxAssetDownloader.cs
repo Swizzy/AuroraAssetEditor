@@ -5,7 +5,7 @@
 // 	Created by Swizzy on 08/05/2015
 // 	Copyright (c) 2015 Swizzy. All rights reserved.
 
-namespace AuroraAssetEditor {
+namespace AuroraAssetEditor.Classes {
     using System;
     using System.Collections.Generic;
     using System.Drawing;

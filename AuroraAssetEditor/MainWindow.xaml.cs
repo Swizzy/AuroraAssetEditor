@@ -17,6 +17,8 @@ namespace AuroraAssetEditor {
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
+    using AuroraAssetEditor.Classes;
+    using AuroraAssetEditor.Controls;
     using Microsoft.Win32;
     using Ookii.Dialogs.Wpf;
     using Image = System.Drawing.Image;

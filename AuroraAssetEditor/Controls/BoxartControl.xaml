@@ -4,18 +4,20 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    x:Class="AuroraAssetEditor.BackgroundControl"
+    x:Class="AuroraAssetEditor.Controls.BoxartControl"
     x:Name="UserControl" AllowDrop="True" PreviewDragEnter="OnDragEnter" Drop="OnDrop" Background="WhiteSmoke">
     <Grid>
         <GroupBox Header="Preview" VerticalAlignment="Top" HorizontalAlignment="Left" BorderBrush="Black" Margin="10">
-            <Viewbox Stretch="Uniform" HorizontalAlignment="Left" VerticalAlignment="Top" MaxHeight="720" MaxWidth="1280">
-                <Image x:Name="PreviewImg" MaxHeight="720" MaxWidth="1280" Height="720" Width="1280"
-                       ContextMenuService.ShowOnDisabled="True" ContextMenuOpening="OnContextMenuOpening" Source="Resources/Placeholders/background.png">
+            <Viewbox Stretch="Uniform" HorizontalAlignment="Left" VerticalAlignment="Top" MaxWidth="900"
+                     MaxHeight="600">
+                <Image x:Name="PreviewImg" ContextMenuService.ShowOnDisabled="True"
+                       ContextMenuOpening="OnContextMenuOpening" MaxWidth="900" MaxHeight="600" Width="900"
+                       Height="600" Source="Resources/Placeholders/cover.png">
                     <Image.ContextMenu>
                         <ContextMenu>
-                            <MenuItem x:Name="SaveContextMenuItem" Header="Save Background To File"
+                            <MenuItem x:Name="SaveContextMenuItem" Header="Save Cover To File"
                                       Click="SaveImageToFileOnClick" />
-                            <MenuItem Header="Select new Background" Click="SelectNewBackground" />
+                            <MenuItem Header="Select new Cover" Click="SelectNewCover" />
                         </ContextMenu>
                     </Image.ContextMenu>
                 </Image>

@@ -4,7 +4,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    x:Class="AuroraAssetEditor.ScreenshotsControl"
+    x:Class="AuroraAssetEditor.Controls.ScreenshotsControl"
     x:Name="UserControl" AllowDrop="True" PreviewDragEnter="OnDragEnter" Drop="OnDrop" Background="WhiteSmoke">
     <Grid>
         <Grid.RowDefinitions>

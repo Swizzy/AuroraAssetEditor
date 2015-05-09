@@ -5,7 +5,7 @@
 // 	Created by Swizzy on 08/05/2015
 // 	Copyright (c) 2015 Swizzy. All rights reserved.
 
-namespace AuroraAssetEditor {
+namespace AuroraAssetEditor.Controls {
     using System;
     using System.ComponentModel;
     using System.Drawing.Imaging;
@@ -16,6 +16,7 @@ namespace AuroraAssetEditor {
     using System.Windows.Controls;
     using System.Windows.Input;
     using System.Windows.Media.Imaging;
+    using AuroraAssetEditor.Classes;
     using Image = System.Drawing.Image;
 
     /// <summary>

@@ -1,4 +1,4 @@
-﻿namespace AuroraAssetEditor {
+﻿namespace AuroraAssetEditor.Classes {
     using System;
 
     internal class StatusArgs: EventArgs {

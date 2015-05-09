@@ -83,40 +83,40 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AuroraAsset.cs" />
-    <Compile Include="AuroraAssetDll.cs" />
-    <Compile Include="CircularProgressBar.xaml.cs">
+    <Compile Include="Classes\AuroraAsset.cs" />
+    <Compile Include="Classes\AuroraAssetDll.cs" />
+    <Compile Include="Controls\CircularProgressBar.xaml.cs">
       <DependentUpon>CircularProgressBar.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FSDAsset.cs" />
-    <Compile Include="IconBannerControl.xaml.cs">
+    <Compile Include="Classes\FSDAsset.cs" />
+    <Compile Include="Controls\IconBannerControl.xaml.cs">
       <DependentUpon>IconBannerControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="InputDialog.xaml.cs">
       <DependentUpon>InputDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="OnlineAssetsControl.xaml.cs">
+    <Compile Include="Controls\OnlineAssetsControl.xaml.cs">
       <DependentUpon>OnlineAssetsControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ScreenshotsControl.xaml.cs">
+    <Compile Include="Controls\ScreenshotsControl.xaml.cs">
       <DependentUpon>ScreenshotsControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="StatusArgs.cs" />
-    <Compile Include="XboxAssetDownloader.cs" />
-    <Compile Include="XboxUnity.cs" />
-    <Page Include="BackgroundControl.xaml">
+    <Compile Include="Classes\StatusArgs.cs" />
+    <Compile Include="Classes\XboxAssetDownloader.cs" />
+    <Compile Include="Classes\XboxUnity.cs" />
+    <Page Include="Controls\BackgroundControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="BoxartControl.xaml">
+    <Page Include="Controls\BoxartControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="CircularProgressBar.xaml">
+    <Page Include="Controls\CircularProgressBar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="IconBannerControl.xaml">
+    <Page Include="Controls\IconBannerControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -132,21 +132,21 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="BackgroundControl.xaml.cs">
+    <Compile Include="Controls\BackgroundControl.xaml.cs">
       <DependentUpon>BackgroundControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="BoxartControl.xaml.cs">
+    <Compile Include="Controls\BoxartControl.xaml.cs">
       <DependentUpon>BoxartControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="OnlineAssetsControl.xaml">
+    <Page Include="Controls\OnlineAssetsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="ScreenshotsControl.xaml">
+    <Page Include="Controls\ScreenshotsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

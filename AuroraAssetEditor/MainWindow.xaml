@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Aurora Asset Editor v{0}.{1} by Swizzy thanks to MaesterRowen" MinHeight="350" MinWidth="550"
         xmlns:self="clr-namespace:AuroraAssetEditor"
+        xmlns:controls="clr-namespace:AuroraAssetEditor.Controls"
         Width="550" Height="350" AllowDrop="True" PreviewDragEnter="OnDragEnter">
     <Window.CommandBindings>
         <CommandBinding Command="self:CustomCommands.AdvancedMode" CanExecute="AdvancedModeCanExecute"
@@ -49,7 +50,7 @@
             <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Background="WhiteSmoke" MinWidth="100"
                   MinHeight="100">
                 <Grid ZIndex="0" Opacity="0.2">
-                    <self:CircularProgressBar
+                    <controls:CircularProgressBar
                         Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Grid}}}" />
                 </Grid>
                 <Grid ZIndex="1">

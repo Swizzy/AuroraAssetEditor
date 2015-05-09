@@ -1,11 +1,11 @@
 ﻿// 
-// 	BoxartControl.xaml.cs
+// 	BackgroundControl.xaml.cs
 // 	AuroraAssetEditor
 // 
 // 	Created by Swizzy on 04/05/2015
 // 	Copyright (c) 2015 Swizzy. All rights reserved.
 
-namespace AuroraAssetEditor {
+namespace AuroraAssetEditor.Controls {
     using System;
     using System.ComponentModel;
     using System.Drawing.Imaging;
@@ -13,20 +13,21 @@ namespace AuroraAssetEditor {
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Media.Imaging;
+    using AuroraAssetEditor.Classes;
     using Microsoft.Win32;
     using Image = System.Drawing.Image;
     using Size = System.Drawing.Size;
 
     /// <summary>
-    ///     Interaction logic for BoxartControl.xaml
+    ///     Interaction logic for BackgroundControl.xaml
     /// </summary>
-    public partial class BoxartControl {
+    public partial class BackgroundControl {
         private readonly MainWindow _main;
         internal bool HavePreview;
         private AuroraAsset.AssetFile _assetFile;
         private MemoryStream _memoryStream;
 
-        public BoxartControl(MainWindow main) {
+        public BackgroundControl(MainWindow main) {
             InitializeComponent();
             _main = main;
             _assetFile = new AuroraAsset.AssetFile();
@@ -46,13 +47,13 @@ namespace AuroraAssetEditor {
         }
 
         public void Load(AuroraAsset.AssetFile asset) {
-            _assetFile.SetBoxart(asset);
-            Dispatcher.Invoke(new Action(() => SetPreview(_assetFile.GetBoxart())));
+            _assetFile.SetBackground(asset);
+            Dispatcher.Invoke(new Action(() => SetPreview(_assetFile.GetBackground())));
         }
 
         private void SetPreview(Image img) {
             if(img == null) {
-                PreviewImg.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/Placeholders/cover.png", UriKind.Absolute));
+                PreviewImg.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/Placeholders/background.png", UriKind.Absolute));
                 HavePreview = false;
                 return;
             }
@@ -72,7 +73,7 @@ namespace AuroraAssetEditor {
         public void Load(Image img) {
             var shouldUseCompression = false;
             Dispatcher.Invoke(new Action(() => shouldUseCompression = _main.UseCompression.IsChecked));
-            _assetFile.SetBoxart(img, shouldUseCompression);
+            _assetFile.SetBackground(img, shouldUseCompression);
             Dispatcher.Invoke(new Action(() => SetPreview(img)));
         }
 
@@ -80,12 +81,12 @@ namespace AuroraAssetEditor {
 
         private void OnDrop(object sender, DragEventArgs e) { _main.DragDrop(this, e); }
 
-        internal void SaveImageToFileOnClick(object sender, RoutedEventArgs e) { MainWindow.SaveToFile(_assetFile.GetBoxart(), "Select where to save the Cover", "cover.png"); }
+        internal void SaveImageToFileOnClick(object sender, RoutedEventArgs e) { MainWindow.SaveToFile(_assetFile.GetBackground(), "Select where to save the Background", "background.png"); }
 
-        internal void SelectNewCover(object sender, RoutedEventArgs e) {
+        internal void SelectNewBackground(object sender, RoutedEventArgs e) {
             var bw = new BackgroundWorker();
             bw.DoWork += (o, args) => {
-                             var img = _main.LoadImage("Select new cover", "cover.png", new Size(900, 600));
+                             var img = _main.LoadImage("Select new background", "background.png", new Size(1280, 720));
                              if(img != null)
                                  Load(img);
                          };
