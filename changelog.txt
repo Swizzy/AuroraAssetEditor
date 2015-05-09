@@ -1,0 +1,8 @@
+v1.1
+ + Added support for reading FSD Assets file(s) and converting to Aurora assets - Thanks for updating the dll to read dds MaesterRowen
+         also thanks for helping me with the structure of these files, without you this app wouldn't have existed!
+ + Added Saving all assets in one go - Thanks for the suggestion felida!
+ + Added Support for downloading Assets from xbox.com and/or Xboxunity.net
+
+v1.0
+ + Initial release

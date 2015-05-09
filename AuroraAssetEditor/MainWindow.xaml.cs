@@ -2,7 +2,7 @@
 // 	MainWindow.xaml.cs
 // 	AuroraAssetEditor
 // 
-// 	Created by Swizzy on 04/05/2015
+// 	Created by Swizzy on 08/05/2015
 // 	Copyright (c) 2015 Swizzy. All rights reserved.
 
 namespace AuroraAssetEditor {
@@ -133,6 +133,8 @@ namespace AuroraAssetEditor {
 
             #endregion
 
+            OnlineAssetsTab.Content = new OnlineAssetsControl(this, _boxart, _background, _iconBanner, _screenshots);
+
             foreach(var arg in args.Where(File.Exists)) {
                 if(VerifyAuroraMagic(arg))
                     LoadAuroraAsset(arg);
@@ -141,7 +143,7 @@ namespace AuroraAssetEditor {
             }
         }
 
-        private static void SaveError(Exception ex) { File.AppendAllText("error.log", string.Format("[{0}]:{2}{1}{2}", DateTime.Now, ex, Environment.NewLine)); }
+        internal static void SaveError(Exception ex) { File.AppendAllText("error.log", string.Format("[{0}]:{2}{1}{2}", DateTime.Now, ex, Environment.NewLine)); }
 
         private static void SaveFileError(string file, Exception ex) {
             SaveError(ex);
@@ -398,23 +400,14 @@ namespace AuroraAssetEditor {
         }
 
         private void TabChanged(object sender, SelectionChangedEventArgs e) {
-            EditMenu.Items.Clear();
-            if(BoxartTab.IsSelected) {
-                foreach(var element in _boxartMenu)
-                    EditMenu.Items.Add(element);
-            }
-            else if(BackgroundTab.IsSelected) {
-                foreach(var element in _backgroundMenu)
-                    EditMenu.Items.Add(element);
-            }
-            else if(IconBannerTab.IsSelected) {
-                foreach(var element in _iconBannerMenu)
-                    EditMenu.Items.Add(element);
-            }
-            else if(ScreenshotsTab.IsSelected) {
-                foreach(var element in _screenshotsMenu)
-                    EditMenu.Items.Add(element);
-            }
+            if(BoxartTab.IsSelected)
+                EditMenu.ItemsSource = _boxartMenu;
+            else if(BackgroundTab.IsSelected)
+                EditMenu.ItemsSource = _backgroundMenu;
+            else if(IconBannerTab.IsSelected)
+                EditMenu.ItemsSource = _iconBannerMenu;
+            else if(ScreenshotsTab.IsSelected)
+                EditMenu.ItemsSource = _screenshotsMenu;
         }
 
         private void EditMenuOpened(object sender, RoutedEventArgs e) {

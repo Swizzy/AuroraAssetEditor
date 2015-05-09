@@ -67,6 +67,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xaml">
@@ -90,9 +92,15 @@
     <Compile Include="InputDialog.xaml.cs">
       <DependentUpon>InputDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="OnlineAssetsControl.xaml.cs">
+      <DependentUpon>OnlineAssetsControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ScreenshotsControl.xaml.cs">
       <DependentUpon>ScreenshotsControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="StatusArgs.cs" />
+    <Compile Include="XboxAssetDownloader.cs" />
+    <Compile Include="XboxUnity.cs" />
     <Page Include="BackgroundControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -127,6 +135,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="OnlineAssetsControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="ScreenshotsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
