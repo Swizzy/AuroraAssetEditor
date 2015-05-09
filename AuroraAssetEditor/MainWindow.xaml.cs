@@ -341,7 +341,7 @@ namespace AuroraAssetEditor {
                                  }
                              }
                          };
-            bw.RunWorkerCompleted += (o, args) => BusyIndicator.Visibility = Visibility.Collapsed;
+            bw.RunWorkerCompleted += (o, args) => { BusyIndicator.Visibility = Visibility.Collapsed; };
             BusyIndicator.Visibility = Visibility.Visible;
             bw.RunWorkerAsync();
         }

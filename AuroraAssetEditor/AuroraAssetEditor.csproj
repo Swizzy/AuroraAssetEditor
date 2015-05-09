@@ -85,6 +85,9 @@
     </ApplicationDefinition>
     <Compile Include="AuroraAsset.cs" />
     <Compile Include="AuroraAssetDll.cs" />
+    <Compile Include="CircularProgressBar.xaml.cs">
+      <DependentUpon>CircularProgressBar.xaml</DependentUpon>
+    </Compile>
     <Compile Include="FSDAsset.cs" />
     <Compile Include="IconBannerControl.xaml.cs">
       <DependentUpon>IconBannerControl.xaml</DependentUpon>
@@ -108,6 +111,10 @@
     <Page Include="BoxartControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CircularProgressBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="IconBannerControl.xaml">
       <Generator>MSBuild:Compile</Generator>
