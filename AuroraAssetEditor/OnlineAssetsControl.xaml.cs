@@ -337,5 +337,9 @@ namespace AuroraAssetEditor {
         }
 
         private void TitleIdBox_TextChanged(object sender, TextChangedEventArgs e) { TitleIdBox.Text = Regex.Replace(TitleIdBox.Text, "[^a-fA-F0-9]+", ""); }
+
+        private void OnDragEnter(object sender, DragEventArgs e) { _main.OnDragEnter(sender, e); }
+
+        private void OnDrop(object sender, DragEventArgs e) { _main.DragDrop(this, e); }
     }
 }
