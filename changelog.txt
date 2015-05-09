@@ -4,6 +4,7 @@ v1.1
  + Added saving all assets in one go - Thanks for the suggestion felida!
  + Added support for downloading Assets from xbox.com and/or Xboxunity.net
  + Added an icon thanks to RAP7HOR
+ + Moved all processing to a background thread and added a busy indicator to make the application not freeze and such...
 
 v1.0
  + Initial release
