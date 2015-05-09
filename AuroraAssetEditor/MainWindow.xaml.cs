@@ -136,12 +136,20 @@ namespace AuroraAssetEditor {
 
             OnlineAssetsTab.Content = new OnlineAssetsControl(this, _boxart, _background, _iconBanner, _screenshots);
 
-            foreach(var arg in args.Where(File.Exists)) {
-                if(VerifyAuroraMagic(arg))
-                    LoadAuroraAsset(arg);
-                else
-                    LoadFsdAsset(arg);
-            }
+            var bw = new BackgroundWorker();
+            bw.DoWork += (sender, e) => {
+                             foreach(var arg in args.Where(File.Exists)) {
+                                 if(VerifyAuroraMagic(arg))
+                                     LoadAuroraAsset(arg);
+                                 else
+                                     LoadFsdAsset(arg);
+                             }
+                         };
+            bw.RunWorkerCompleted += (sender, e) => BusyIndicator.Visibility = Visibility.Collapsed;
+            if(!args.Any())
+                return;
+            BusyIndicator.Visibility = Visibility.Visible;
+            bw.RunWorkerAsync();
         }
 
         internal static void SaveError(Exception ex) { File.AppendAllText("error.log", string.Format("[{0}]:{2}{1}{2}", DateTime.Now, ex, Environment.NewLine)); }
@@ -157,19 +165,19 @@ namespace AuroraAssetEditor {
                 var asset = new AuroraAsset.AssetFile(File.ReadAllBytes(filename));
                 if(asset.HasBoxArt) {
                     _boxart.Load(asset);
-                    BoxartTab.IsSelected = true;
+                    Dispatcher.Invoke(new Action(() => BoxartTab.IsSelected = true));
                 }
                 else if(asset.HasBackground) {
                     _background.Load(asset);
-                    BackgroundTab.IsSelected = true;
+                    Dispatcher.Invoke(new Action(() => BackgroundTab.IsSelected = true));
                 }
                 else if(asset.HasScreenshots) {
                     _screenshots.Load(asset);
-                    ScreenshotsTab.IsSelected = true;
+                    Dispatcher.Invoke(new Action(() => ScreenshotsTab.IsSelected = true));
                 }
                 else if(asset.HasIconBanner) {
                     _iconBanner.Load(asset);
-                    IconBannerTab.IsSelected = true;
+                    Dispatcher.Invoke(new Action(() => IconBannerTab.IsSelected = true));
                 }
                 else
                     MessageBox.Show(string.Format("ERROR: {0} Doesn't contain any Assets", filename), "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -187,22 +195,22 @@ namespace AuroraAssetEditor {
                 var img = asset.GetBoxart();
                 if(img != null) {
                     _boxart.Load(img);
-                    BoxartTab.IsSelected = true;
+                    Dispatcher.Invoke(new Action(() => BoxartTab.IsSelected = true));
                 }
                 img = asset.GetBackground();
                 if(img != null) {
                     _background.Load(img);
-                    BackgroundTab.IsSelected = true;
+                    Dispatcher.Invoke(new Action(() => BackgroundTab.IsSelected = true));
                 }
                 img = asset.GetIcon();
                 if(img != null) {
                     _iconBanner.Load(img, true);
-                    IconBannerTab.IsSelected = true;
+                    Dispatcher.Invoke(new Action(() => IconBannerTab.IsSelected = true));
                 }
                 img = asset.GetBanner();
                 if(img != null) {
                     _iconBanner.Load(img, false);
-                    IconBannerTab.IsSelected = true;
+                    Dispatcher.Invoke(new Action(() => IconBannerTab.IsSelected = true));
                 }
                 var screenshots = asset.GetScreenshots();
                 if(screenshots.Length > 0) {
@@ -215,7 +223,7 @@ namespace AuroraAssetEditor {
                             return;
                         }
                     }
-                    ScreenshotsTab.IsSelected = true;
+                    Dispatcher.Invoke(new Action(() => ScreenshotsTab.IsSelected = true));
                 }
                 else
                     MessageBox.Show(string.Format("ERROR: {0} Doesn't contain any Assets", filename), "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -236,12 +244,17 @@ namespace AuroraAssetEditor {
                                          };
             if(ofd.ShowDialog() != true)
                 return;
-            foreach(var fileName in ofd.FileNames) {
-                if(VerifyAuroraMagic(fileName))
-                    LoadAuroraAsset(fileName);
-                else
-                    LoadFsdAsset(fileName);
-            }
+            var bw = new BackgroundWorker();
+            bw.DoWork += (o, args) => {
+                             foreach(var fileName in ofd.FileNames) {
+                                 if(VerifyAuroraMagic(fileName))
+                                     LoadAuroraAsset(fileName);
+                                 else
+                                     LoadFsdAsset(fileName);
+                             }
+                         };
+            bw.RunWorkerCompleted += (o, args) => BusyIndicator.Visibility = Visibility.Collapsed;
+            bw.RunWorkerAsync();
         }
 
         private static bool VerifyAuroraMagic(string fileName) {

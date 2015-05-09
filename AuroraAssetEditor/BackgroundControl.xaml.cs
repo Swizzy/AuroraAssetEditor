@@ -7,6 +7,7 @@
 
 namespace AuroraAssetEditor {
     using System;
+    using System.ComponentModel;
     using System.Drawing.Imaging;
     using System.IO;
     using System.Windows;
@@ -21,8 +22,8 @@ namespace AuroraAssetEditor {
     /// </summary>
     public partial class BackgroundControl {
         private readonly MainWindow _main;
-        private AuroraAsset.AssetFile _assetFile;
         internal bool HavePreview;
+        private AuroraAsset.AssetFile _assetFile;
         private MemoryStream _memoryStream;
 
         public BackgroundControl(MainWindow main) {
@@ -37,9 +38,7 @@ namespace AuroraAssetEditor {
                 Save(sfd.FileName);
         }
 
-        public void Save(string filename) {
-            File.WriteAllBytes(filename, _assetFile.FileData);
-        }
+        public void Save(string filename) { File.WriteAllBytes(filename, _assetFile.FileData); }
 
         public void Reset() {
             SetPreview(null);
@@ -48,7 +47,7 @@ namespace AuroraAssetEditor {
 
         public void Load(AuroraAsset.AssetFile asset) {
             _assetFile.SetBackground(asset);
-			Dispatcher.Invoke(new Action(() => SetPreview(_assetFile.GetBackground())));
+            Dispatcher.Invoke(new Action(() => SetPreview(_assetFile.GetBackground())));
         }
 
         private void SetPreview(Image img) {
@@ -84,9 +83,14 @@ namespace AuroraAssetEditor {
         internal void SaveImageToFileOnClick(object sender, RoutedEventArgs e) { MainWindow.SaveToFile(_assetFile.GetBackground(), "Select where to save the Background", "background.png"); }
 
         internal void SelectNewBackground(object sender, RoutedEventArgs e) {
-            var img = _main.LoadImage("Select new background", "background.png", new Size(1280, 720));
-            if(img != null)
-                Load(img);
+            var bw = new BackgroundWorker();
+            bw.DoWork += (o, args) => {
+                             var img = _main.LoadImage("Select new background", "background.png", new Size(1280, 720));
+                             if(img != null)
+                                 Load(img);
+                         };
+            bw.RunWorkerCompleted += (o, args) => _main.BusyIndicator.Visibility = Visibility.Collapsed;
+            bw.RunWorkerAsync();
         }
 
         private void OnContextMenuOpening(object sender, ContextMenuEventArgs e) { SaveContextMenuItem.IsEnabled = HavePreview; }

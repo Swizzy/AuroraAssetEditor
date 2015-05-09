@@ -7,6 +7,7 @@
 
 namespace AuroraAssetEditor {
     using System;
+    using System.ComponentModel;
     using System.Drawing.Imaging;
     using System.IO;
     using System.Windows;
@@ -82,9 +83,14 @@ namespace AuroraAssetEditor {
         internal void SaveImageToFileOnClick(object sender, RoutedEventArgs e) { MainWindow.SaveToFile(_assetFile.GetBoxart(), "Select where to save the Cover", "cover.png"); }
 
         internal void SelectNewCover(object sender, RoutedEventArgs e) {
-            var img = _main.LoadImage("Select new cover", "cover.png", new Size(900, 600));
-            if(img != null)
-                Load(img);
+            var bw = new BackgroundWorker();
+            bw.DoWork += (o, args) => {
+                             var img = _main.LoadImage("Select new cover", "cover.png", new Size(900, 600));
+                             if(img != null)
+                                 Load(img);
+                         };
+            bw.RunWorkerCompleted += (o, args) => _main.BusyIndicator.Visibility = Visibility.Collapsed;
+            bw.RunWorkerAsync();
         }
 
         private void OnContextMenuOpening(object sender, ContextMenuEventArgs e) { SaveContextMenuItem.IsEnabled = HavePreview; }

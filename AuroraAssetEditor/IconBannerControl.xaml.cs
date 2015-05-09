@@ -7,6 +7,7 @@
 
 namespace AuroraAssetEditor {
     using System;
+    using System.ComponentModel;
     using System.Drawing.Imaging;
     using System.IO;
     using System.Windows;
@@ -100,15 +101,25 @@ namespace AuroraAssetEditor {
         internal void SaveBannerToFileOnClick(object sender, RoutedEventArgs e) { MainWindow.SaveToFile(_assetFile.GetBanner(), "Select where to save the Banner", "banner.png"); }
 
         internal void SelectNewIcon(object sender, RoutedEventArgs e) {
-            var img = _main.LoadImage("Select new icon", "icon.png", new Size(64, 64));
-            if(img != null)
-                Load(img, true);
+            var bw = new BackgroundWorker();
+            bw.DoWork += (o, args) => {
+                             var img = _main.LoadImage("Select new icon", "icon.png", new Size(64, 64));
+                             if(img != null)
+                                 Load(img, true);
+                         };
+            bw.RunWorkerCompleted += (o, args) => _main.BusyIndicator.Visibility = Visibility.Collapsed;
+            bw.RunWorkerAsync();
         }
 
         internal void SelectNewBanner(object sender, RoutedEventArgs e) {
-            var img = _main.LoadImage("Select new banner", "banner.png", new Size(420, 96));
-            if(img != null)
-                Load(img, false);
+            var bw = new BackgroundWorker();
+            bw.DoWork += (o, args) => {
+                             var img = _main.LoadImage("Select new banner", "banner.png", new Size(420, 96));
+                             if(img != null)
+                                 Load(img, false);
+                         };
+            bw.RunWorkerCompleted += (o, args) => _main.BusyIndicator.Visibility = Visibility.Collapsed;
+            bw.RunWorkerAsync();
         }
 
         private void OnContextMenuOpening(object sender, ContextMenuEventArgs e) {

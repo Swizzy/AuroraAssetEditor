@@ -7,6 +7,7 @@
 
 namespace AuroraAssetEditor {
     using System;
+    using System.ComponentModel;
     using System.Drawing.Imaging;
     using System.IO;
     using System.Linq;
@@ -124,9 +125,9 @@ namespace AuroraAssetEditor {
             Dispatcher.Invoke(new Action(() => shouldUseCompression = _main.UseCompression.IsChecked));
             _assetFile.SetScreenshot(img, index + 1, shouldUseCompression);
             Dispatcher.Invoke(new Action(() => {
-                _screenshots[index] = img;
-                SetPreview(img);
-                CBox.SelectedIndex = index;
+                                             _screenshots[index] = img;
+                                             SetPreview(img);
+                                             CBox.SelectedIndex = index;
                                          }));
         }
 
@@ -160,17 +161,27 @@ namespace AuroraAssetEditor {
         }
 
         internal void SelectNewScreenshot(object sender, RoutedEventArgs e) {
-            var img = _main.LoadImage("Select new screenshot", "screenshot.png", new Size(1000, 562));
-            if(img != null)
-                Load(img, true);
+            var bw = new BackgroundWorker();
+            bw.DoWork += (o, args) => {
+                             var img = _main.LoadImage("Select new screenshot", "screenshot.png", new Size(1000, 562));
+                             if(img != null)
+                                 Load(img, true);
+                         };
+            bw.RunWorkerCompleted += (o, args) => _main.BusyIndicator.Visibility = Visibility.Collapsed;
+            bw.RunWorkerAsync();
         }
 
         internal void AddNewScreenshot(object sender, RoutedEventArgs e) {
-            var imglist = _main.LoadImages("Select new screenshot(s)", "screenshot.png", new Size(1000, 562));
-            if(imglist == null)
-                return;
-            foreach(var img in imglist)
-                Load(img, false);
+            var bw = new BackgroundWorker();
+            bw.DoWork += (o, args) => {
+                             var imglist = _main.LoadImages("Select new screenshot(s)", "screenshot.png", new Size(1000, 562));
+                             if(imglist == null)
+                                 return;
+                             foreach(var img in imglist)
+                                 Load(img, false);
+                         };
+            bw.RunWorkerCompleted += (o, args) => _main.BusyIndicator.Visibility = Visibility.Collapsed;
+            bw.RunWorkerAsync();
         }
 
         private void OnContextMenuOpening(object sender, ContextMenuEventArgs e) {
