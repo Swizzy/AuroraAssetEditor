@@ -8,6 +8,7 @@
 namespace AuroraAssetEditor {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Drawing;
     using System.Drawing.Imaging;
     using System.IO;
@@ -276,9 +277,11 @@ namespace AuroraAssetEditor {
 
         private Image GetImage(string filename, Size newSize) {
             try {
+                var shouldResize = false;
+                Dispatcher.Invoke(new Action(() => shouldResize = AutoResizeImages.IsChecked));
                 var ms = new MemoryStream(File.ReadAllBytes(filename));
                 var img = Image.FromStream(ms);
-                if(!img.Size.Equals(newSize) && AutoResizeImages.IsChecked) {
+                if(!img.Size.Equals(newSize) && shouldResize) {
                     //TODO: Add option to honor aspect ratio
                     img = new Bitmap(img, newSize);
                 }
@@ -294,47 +297,53 @@ namespace AuroraAssetEditor {
             if(!e.Data.GetDataPresent(DataFormats.FileDrop))
                 return;
             var files = (string[])e.Data.GetData(DataFormats.FileDrop);
-            var askScreenshot = true;
-            foreach(var t in files) {
-                if(VerifyAuroraMagic(t))
-                    LoadAuroraAsset(t);
-                if(VerifyFsdMagic(t))
-                    LoadFsdAsset(t);
-                else if(Equals(sender, _boxart))
-                    _boxart.Load(GetImage(t, new Size(900, 600)));
-                else if(Equals(sender, _background))
-                    _background.Load(GetImage(t, new Size(1280, 720)));
-                else if(Equals(sender, _screenshots)) {
-                    if(askScreenshot && _screenshots.SelectedExists()) { // Do we have a screenshot selected?
-                        var res = MessageBox.Show(string.Format("Do you want to replace the current Screenshot with {0}?", t), "Replace screenshot?", MessageBoxButton.YesNoCancel,
-                                                  MessageBoxImage.Question, MessageBoxResult.Cancel);
-                        if(res == MessageBoxResult.Yes) {
-                            _screenshots.Load(GetImage(t, new Size(1000, 562)), true); // We want to replace it
-                            askScreenshot = false;
-                        }
-                        else if(res == MessageBoxResult.No && _screenshots.SpaceLeft()) // Do we have space for another screenshot?
-                            _screenshots.Load(GetImage(t, new Size(1000, 562)), false);
-                    }
-                    else if(_screenshots.SpaceLeft()) {
-                        askScreenshot = false; // The user probably want to add the remaining covers...
-                        _screenshots.Load(GetImage(t, new Size(1000, 562)), true);
-                    }
-                    else
-                        MessageBox.Show("There is no space left for new screenshots :(", "No space left", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-                else if(Equals(sender, _iconBanner)) {
-                    var res = MessageBox.Show(string.Format("Is {0} an Icon? (If you select no it's assumed it's a banner)", t), "Is this an icon?", MessageBoxButton.YesNoCancel,
-                                              MessageBoxImage.Question, MessageBoxResult.Cancel);
-                    switch(res) {
-                        case MessageBoxResult.Yes:
-                            _iconBanner.Load(GetImage(t, new Size(64, 64)), true);
-                            break;
-                        case MessageBoxResult.No:
-                            _iconBanner.Load(GetImage(t, new Size(420, 96)), false);
-                            break;
-                    }
-                }
-            }
+            var bw = new BackgroundWorker();
+            bw.DoWork += (o, args) => {
+                             var askScreenshot = true;
+                             foreach(var t in files) {
+                                 if(VerifyAuroraMagic(t))
+                                     LoadAuroraAsset(t);
+                                 if(VerifyFsdMagic(t))
+                                     LoadFsdAsset(t);
+                                 else if(Equals(sender, _boxart))
+                                     _boxart.Load(GetImage(t, new Size(900, 600)));
+                                 else if(Equals(sender, _background))
+                                     _background.Load(GetImage(t, new Size(1280, 720)));
+                                 else if(Equals(sender, _screenshots)) {
+                                     if(askScreenshot && _screenshots.SelectedExists()) { // Do we have a screenshot selected?
+                                         var res = MessageBox.Show(string.Format("Do you want to replace the current Screenshot with {0}?", t), "Replace screenshot?", MessageBoxButton.YesNoCancel,
+                                                                   MessageBoxImage.Question, MessageBoxResult.Cancel);
+                                         if(res == MessageBoxResult.Yes) {
+                                             _screenshots.Load(GetImage(t, new Size(1000, 562)), true); // We want to replace it
+                                             askScreenshot = false;
+                                         }
+                                         else if(res == MessageBoxResult.No && _screenshots.SpaceLeft()) // Do we have space for another screenshot?
+                                             _screenshots.Load(GetImage(t, new Size(1000, 562)), false);
+                                     }
+                                     else if(_screenshots.SpaceLeft()) {
+                                         askScreenshot = false; // The user probably want to add the remaining covers...
+                                         _screenshots.Load(GetImage(t, new Size(1000, 562)), true);
+                                     }
+                                     else
+                                         MessageBox.Show("There is no space left for new screenshots :(", "No space left", MessageBoxButton.OK, MessageBoxImage.Error);
+                                 }
+                                 else if(Equals(sender, _iconBanner)) {
+                                     var res = MessageBox.Show(string.Format("Is {0} an Icon? (If you select no it's assumed it's a banner)", t), "Is this an icon?", MessageBoxButton.YesNoCancel,
+                                                               MessageBoxImage.Question, MessageBoxResult.Cancel);
+                                     switch(res) {
+                                         case MessageBoxResult.Yes:
+                                             _iconBanner.Load(GetImage(t, new Size(64, 64)), true);
+                                             break;
+                                         case MessageBoxResult.No:
+                                             _iconBanner.Load(GetImage(t, new Size(420, 96)), false);
+                                             break;
+                                     }
+                                 }
+                             }
+                         };
+            bw.RunWorkerCompleted += (o, args) => BusyIndicator.Visibility = Visibility.Collapsed;
+            BusyIndicator.Visibility = Visibility.Visible;
+            bw.RunWorkerAsync();
         }
 
         private static bool VerifyFsdMagic(string fileName) {

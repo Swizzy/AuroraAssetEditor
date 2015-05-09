@@ -70,8 +70,10 @@ namespace AuroraAssetEditor {
 
         public void Load(AuroraAsset.AssetFile asset) {
             _assetFile.SetScreenshots(asset);
-            _screenshots = _assetFile.GetScreenshots();
-            CBox_SelectionChanged(null, null);
+            Dispatcher.Invoke(new Action(() => {
+                                             _screenshots = _assetFile.GetScreenshots();
+                                             CBox_SelectionChanged(null, null);
+                                         }));
         }
 
         private void SetPreview(Image img) {
@@ -118,10 +120,14 @@ namespace AuroraAssetEditor {
                 MessageBox.Show("There is no space left for new screenshots :(", "No space left", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            _assetFile.SetScreenshot(img, index + 1, _main.UseCompression.IsChecked);
-            _screenshots[index] = img;
-            SetPreview(img);
-            CBox.SelectedIndex = index;
+            var shouldUseCompression = false;
+            Dispatcher.Invoke(new Action(() => shouldUseCompression = _main.UseCompression.IsChecked));
+            _assetFile.SetScreenshot(img, index + 1, shouldUseCompression);
+            Dispatcher.Invoke(new Action(() => {
+                _screenshots[index] = img;
+                SetPreview(img);
+                CBox.SelectedIndex = index;
+                                         }));
         }
 
         public bool SelectedExists() {

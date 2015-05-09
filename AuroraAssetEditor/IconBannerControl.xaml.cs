@@ -48,8 +48,8 @@ namespace AuroraAssetEditor {
         public void Load(AuroraAsset.AssetFile asset) {
             _assetFile.SetIcon(asset);
             _assetFile.SetBanner(asset);
-            SetPreview(_assetFile.GetIcon(), true);
-            SetPreview(_assetFile.GetBanner(), false);
+            Dispatcher.Invoke(new Action(() => SetPreview(_assetFile.GetIcon(), true)));
+            Dispatcher.Invoke(new Action(() => SetPreview(_assetFile.GetBanner(), false)));
         }
 
         private void SetPreview(Image img, bool icon) {
@@ -82,11 +82,13 @@ namespace AuroraAssetEditor {
         }
 
         public void Load(Image img, bool icon) {
+            var shouldUseCompression = false;
+            Dispatcher.Invoke(new Action(() => shouldUseCompression = _main.UseCompression.IsChecked));
             if(icon)
-                _assetFile.SetIcon(img, _main.UseCompression.IsChecked);
+                _assetFile.SetIcon(img, shouldUseCompression);
             else
-                _assetFile.SetBanner(img, _main.UseCompression.IsChecked);
-            SetPreview(img, icon);
+                _assetFile.SetBanner(img, shouldUseCompression);
+            Dispatcher.Invoke(new Action(() => SetPreview(img, icon)));
         }
 
         private void OnDragEnter(object sender, DragEventArgs e) { _main.OnDragEnter(sender, e); }

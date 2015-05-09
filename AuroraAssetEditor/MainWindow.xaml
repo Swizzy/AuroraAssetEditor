@@ -9,36 +9,46 @@
                         Executed="AdvancedModeOnExecuted" />
     </Window.CommandBindings>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Menu Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Background="White">
-            <MenuItem Header="File">
-                <MenuItem Header="Create New Asset File" Click="CreateNewOnClick" />
-                <MenuItem Header="Load Asset File" Click="LoadAssetOnClick" />
-                <MenuItem Header="Save All Assets" Click="SaveAllAssetsOnClick" />
-                <Separator />
-                <MenuItem Header="Save Boxart/Cover Asset" Click="SaveBoxartOnClick" />
-                <MenuItem Header="Save Background Asset" Click="SaveBackgroundOnClick" />
-                <MenuItem Header="Save Screenshots Asset" Click="SaveScreenshotsOnClick" />
-                <MenuItem Header="Save Icon/Banner Asset" Click="SaveIconBannerOnClick" />
-                <Separator />
-                <MenuItem Header="Exit" Click="ExitOnClick" />
-            </MenuItem>
-            <MenuItem Header="Settings" x:Name="SettingsMenu">
-                <MenuItem x:Name="AutoResizeImages" Header="Auto Resize Images" IsCheckable="True" IsChecked="True" />
-                <MenuItem x:Name="UseCompression" Header="Use Compression" IsCheckable="True" IsChecked="True" />
-            </MenuItem>
-            <MenuItem Header="Edit" x:Name="EditMenu" SubmenuOpened="EditMenuOpened" />
-        </Menu>
-        <TabControl Grid.Row="1" HorizontalAlignment="Stretch" Margin="10" VerticalAlignment="Stretch"
+        <Grid ZIndex="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Menu Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Background="White">
+                <MenuItem Header="File">
+                    <MenuItem Header="Create New Asset File" Click="CreateNewOnClick" />
+                    <MenuItem Header="Load Asset File" Click="LoadAssetOnClick" />
+                    <MenuItem Header="Save All Assets" Click="SaveAllAssetsOnClick" />
+                    <Separator />
+                    <MenuItem Header="Save Boxart/Cover Asset" Click="SaveBoxartOnClick" />
+                    <MenuItem Header="Save Background Asset" Click="SaveBackgroundOnClick" />
+                    <MenuItem Header="Save Screenshots Asset" Click="SaveScreenshotsOnClick" />
+                    <MenuItem Header="Save Icon/Banner Asset" Click="SaveIconBannerOnClick" />
+                    <Separator />
+                    <MenuItem Header="Exit" Click="ExitOnClick" />
+                </MenuItem>
+                <MenuItem Header="Settings" x:Name="SettingsMenu">
+                    <MenuItem x:Name="AutoResizeImages" Header="Auto Resize Images" IsCheckable="True" IsChecked="True" />
+                    <MenuItem x:Name="UseCompression" Header="Use Compression" IsCheckable="True" IsChecked="True" />
+                </MenuItem>
+                <MenuItem Header="Edit" x:Name="EditMenu" SubmenuOpened="EditMenuOpened" />
+            </Menu>
+            <TabControl Grid.Row="1" HorizontalAlignment="Stretch" Margin="10" VerticalAlignment="Stretch"
                     SelectionChanged="TabChanged">
-            <TabItem Header="Boxart/Cover" x:Name="BoxartTab" x:FieldModifier="private" />
-            <TabItem Header="Background" x:Name="BackgroundTab" x:FieldModifier="private" />
-            <TabItem Header="Icon/Banner" x:Name="IconBannerTab" x:FieldModifier="private" />
-            <TabItem Header="Screenshots" x:Name="ScreenshotsTab" x:FieldModifier="private" />
-            <TabItem Header="Online Assets" x:Name="OnlineAssetsTab" x:FieldModifier="private" />
-        </TabControl>
+                <TabItem Header="Boxart/Cover" x:Name="BoxartTab" x:FieldModifier="private" />
+                <TabItem Header="Background" x:Name="BackgroundTab" x:FieldModifier="private" />
+                <TabItem Header="Icon/Banner" x:Name="IconBannerTab" x:FieldModifier="private" />
+                <TabItem Header="Screenshots" x:Name="ScreenshotsTab" x:FieldModifier="private" />
+                <TabItem Header="Online Assets" x:Name="OnlineAssetsTab" x:FieldModifier="private" />
+            </TabControl>
+        </Grid>
+        <Grid x:Name="BusyIndicator" ZIndex="1" Visibility="Collapsed">
+            <Grid.Background>
+                <SolidColorBrush Color="DimGray" Opacity="0.7" />
+            </Grid.Background>
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Background="WhiteSmoke" MinWidth="100" MinHeight="100">
+                <TextBlock Text="Please wait while processing your request..." VerticalAlignment="Center" HorizontalAlignment="Center" Margin="20"/>
+            </Grid>
+        </Grid>
     </Grid>
 </Window>
