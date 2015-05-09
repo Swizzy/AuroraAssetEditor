@@ -11,6 +11,8 @@ namespace AuroraAssetEditor {
     using System.Drawing.Imaging;
     using System.IO;
     using System.Linq;
+    using System.Runtime.InteropServices;
+    using PhoenixTools;
 
     internal class FsdAsset {
         public enum FsdAssetType: uint {
@@ -54,19 +56,31 @@ namespace AuroraAssetEditor {
 
         private static uint Swap(uint x) { return (x & 0x000000FF) << 24 | (x & 0x0000FF00) << 8 | (x & 0x00FF0000) >> 8 | (x & 0xFF000000) >> 24; }
 
+        private static Image RawArgbToImage(byte[] raw, int width, int height) {
+            var ret = new Bitmap(width, height);
+            var rect = new Rectangle(new Point(0, 0), new Size(width, height));
+            var bmpData = ret.LockBits(rect, ImageLockMode.ReadWrite, ret.PixelFormat);
+            Marshal.Copy(raw, 0, bmpData.Scan0, raw.Length);
+            ret.UnlockBits(bmpData);
+            return ret;
+        }
+
         private static Image GetImage(byte[] data) {
-            if(data[0] != 'D' && data[1] != 'D' && data[1] != 'S') {
-                using(var ms = new MemoryStream(data)) {
-                    var img = Image.FromStream(ms);
-                    var img2 = new Bitmap(img.Width, img.Height, PixelFormat.Format32bppArgb);
-                    var g = Graphics.FromImage(img);
-                    g.DrawImage(img2, new Point(0, 0));
-                    g.Dispose();
-                    img.Dispose();
-                    return img2;
-                }
+            if(data[0] == 'D' || data[1] == 'D' || data[1] == 'S') {
+                var imageData = new byte[0];
+                int imageWidth, imageHeight;
+                AuroraAssetDll.ProcessDDSToImage(ref data, ref imageData, out imageWidth, out imageHeight);
+                return RawArgbToImage(imageData, imageWidth, imageHeight);
             }
-            return null; // TODO: Deal with DDS
+            using(var ms = new MemoryStream(data)) {
+                var img = Image.FromStream(ms);
+                var img2 = new Bitmap(img.Width, img.Height, PixelFormat.Format32bppArgb);
+                var g = Graphics.FromImage(img);
+                g.DrawImage(img2, new Point(0, 0));
+                g.Dispose();
+                img.Dispose();
+                return img2;
+            }
         }
 
         public Image GetBanner() { return (from entry in Entries where entry.AssetType == FsdAssetType.Banner && entry.Size > 0 select GetImage(entry.Data)).FirstOrDefault(); }
@@ -78,8 +92,9 @@ namespace AuroraAssetEditor {
         public Image GetBoxart() { return (from entry in Entries where entry.AssetType == FsdAssetType.FullCover && entry.Size > 0 select GetImage(entry.Data)).FirstOrDefault(); }
 
         public Image[] GetScreenshots() {
-            var ret = (from entry in Entries where entry.AssetType == FsdAssetType.Screenshot && entry.Size > 0 select GetImage(entry.Data)).ToList();
-            ret.AddRange(from entry in Screenshots where entry.Size > 0 select GetImage(entry.Data));
+            var ret = (from entry in Screenshots where entry.Size > 0 select GetImage(entry.Data)).ToList();
+            if(ret.Count == 0)
+                ret.AddRange(from entry in Entries where entry.AssetType == FsdAssetType.Screenshot && entry.Size > 0 select GetImage(entry.Data));
             return ret.ToArray();
         }
 

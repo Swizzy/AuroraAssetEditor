@@ -19,6 +19,9 @@ namespace PhoenixTools
         private static extern int ConvertAssetToImage(IntPtr headerData, int headerDataLen, IntPtr videoData, int videoDataLen, IntPtr imageData, out int imageDataLen,
                                                             out int imageWidth, out int imageHeight );
 
+        [DllImport("AuroraAsset.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int ConvertDDSToImage(IntPtr ddsData, int ddsDataLen, IntPtr imageData, out int imageDataLen, out int imageWidth, out int imageHeight);
+
         /// <summary>
         /// Takes raw pixel data in linear ARGB format and outputs Aurora .asset formatted header and video data
         /// </summary>
@@ -92,7 +95,7 @@ namespace PhoenixTools
         }
 
         /// <summary>
-        /// Takes asset header and video data and outputs raw pixel data in ARGB format.
+        /// Takes asset header and video data and outputs raw pixel data in BGRA format.
         /// </summary>
         /// <param name="headerData"></param>
         /// <param name="videoData"></param>
@@ -156,6 +159,71 @@ namespace PhoenixTools
                     Marshal.FreeHGlobal(hd);
                 if (vd != IntPtr.Zero)
                     Marshal.FreeHGlobal(vd);
+            }
+
+            imageWidth = 0;
+            imageHeight = 0;
+            return false;
+        }
+
+        /// <summary>
+        /// Takes a DDS image data (with header) and outputs raw pixel data in BGRA format.
+        /// </summary>
+        /// <param name="ddsData"></param>
+        /// <param name="pixelData"></param>
+        /// <param name="imageWidth"></param>
+        /// <param name="imageHeight"></param>
+        /// <returns></returns>
+        public static bool ProcessDDSToImage(ref byte[] ddsData, ref byte[] pixelData, out int imageWidth, out int imageHeight)
+        {
+            IntPtr dds = IntPtr.Zero, pd = IntPtr.Zero;
+            try
+            {
+                bool status = false;
+
+                int ddsDataLen = ddsData.Length;
+                if (ddsDataLen == 0)
+                {
+                    imageWidth = 0;
+                    imageHeight = 0;
+                    return false;
+                }
+
+                // Copy the pixel data to an unmanaged memory buffer
+                dds = Marshal.AllocHGlobal(ddsDataLen);
+                Marshal.Copy(ddsData, 0, dds, ddsDataLen);
+
+                // Create variables to hold buffer sizes
+                int imageDataLen;
+                int result = ConvertDDSToImage(dds, ddsDataLen, IntPtr.Zero, out imageDataLen, out imageWidth, out imageHeight);
+                if (result == 1)
+                {
+                    // Allocate unmanaged memory for asset data
+                    pd = Marshal.AllocHGlobal(imageDataLen);
+
+                    // Obtain data
+                    result = ConvertDDSToImage(dds, ddsDataLen, pd, out imageDataLen, out imageWidth, out imageHeight);
+                    if (result == 1)
+                    {
+                        // Copy our pixel data
+                        pixelData = new byte[imageDataLen];
+                        Marshal.Copy(pd, pixelData, 0, imageDataLen);
+                        status = true;
+                    }
+                }
+                return status;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            finally
+            {
+                // Clean up unmanaged file data
+                if (pd != IntPtr.Zero)
+                    Marshal.FreeHGlobal(pd);
+                if (dds != IntPtr.Zero)
+                    Marshal.FreeHGlobal(dds);
             }
 
             imageWidth = 0;

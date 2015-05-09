@@ -46,6 +46,7 @@ namespace AuroraAssetEditor {
                 ((MenuItem)mitem).IsEnabled = false;
             var ver = Assembly.GetAssembly(typeof(MainWindow)).GetName().Version;
             Title = string.Format(Title, ver.Major, ver.Minor);
+            Icon = App.WpfIcon;
 
             #region Boxart
 
@@ -340,8 +341,6 @@ namespace AuroraAssetEditor {
                     return br.ReadUInt32() == 0x41445346; /* FSDA in LittleEndian format */
             }
         }
-
-        private void OnMainDrop(object sender, DragEventArgs e) { DragDrop(this, e); }
 
         internal static void SaveToFile(Image img, string title, string defaultFilename) {
             var sfd = new SaveFileDialog {
