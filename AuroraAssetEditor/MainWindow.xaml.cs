@@ -430,6 +430,8 @@ namespace AuroraAssetEditor {
                 EditMenu.ItemsSource = _iconBannerMenu;
             else if(ScreenshotsTab.IsSelected)
                 EditMenu.ItemsSource = _screenshotsMenu;
+            else
+                EditMenu.ItemsSource = null;
         }
 
         private void EditMenuOpened(object sender, RoutedEventArgs e) {
