@@ -16,10 +16,11 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Menu Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Background="White">
-                <MenuItem Header="File">
+                <MenuItem Header="File" ContextMenuOpening="FileOpening">
                     <MenuItem Header="Create New Asset File" Click="CreateNewOnClick" />
                     <MenuItem Header="Load Asset File" Click="LoadAssetOnClick" />
                     <MenuItem Header="Save All Assets" Click="SaveAllAssetsOnClick" />
+                    <MenuItem Header="Save All Assets to FTP" Click="SaveAllAssetsFtpOnClick" x:Name="FtpUpload" />
                     <Separator />
                     <MenuItem Header="Save Boxart/Cover Asset" Click="SaveBoxartOnClick" />
                     <MenuItem Header="Save Background Asset" Click="SaveBackgroundOnClick" />
@@ -31,6 +32,7 @@
                 <MenuItem Header="Settings" x:Name="SettingsMenu">
                     <MenuItem x:Name="AutoResizeImages" Header="Auto Resize Images" IsCheckable="True" IsChecked="True" />
                     <MenuItem x:Name="UseCompression" Header="Use Compression" IsCheckable="True" IsChecked="True" />
+                    <MenuItem Header="FTP Settings" Click="FtpSettingsClick" />
                 </MenuItem>
                 <MenuItem Header="Edit" x:Name="EditMenu" SubmenuOpened="EditMenuOpened" />
             </Menu>

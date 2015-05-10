@@ -2,7 +2,7 @@
 // 	BoxartControl.xaml.cs
 // 	AuroraAssetEditor
 // 
-// 	Created by Swizzy on 04/05/2015
+// 	Created by Swizzy on 10/05/2015
 // 	Copyright (c) 2015 Swizzy. All rights reserved.
 
 namespace AuroraAssetEditor.Controls {
@@ -95,5 +95,7 @@ namespace AuroraAssetEditor.Controls {
         }
 
         private void OnContextMenuOpening(object sender, ContextMenuEventArgs e) { SaveContextMenuItem.IsEnabled = HavePreview; }
+
+        public byte[] GetData() { return _assetFile.FileData; }
     }
 }

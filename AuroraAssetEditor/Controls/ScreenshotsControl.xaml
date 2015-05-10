@@ -23,7 +23,8 @@
             <Viewbox Stretch="Uniform" HorizontalAlignment="Left" VerticalAlignment="Top" MaxHeight="562"
                      MaxWidth="1000">
                 <Image x:Name="PreviewImg" MaxHeight="562" MaxWidth="1000" Height="562" Width="1000"
-                       ContextMenuService.ShowOnDisabled="True" ContextMenuOpening="OnContextMenuOpening" Source="Resources/Placeholders/screenshot.png">
+                       ContextMenuService.ShowOnDisabled="True" ContextMenuOpening="OnContextMenuOpening"
+                       Source="Resources/Placeholders/screenshot.png">
                     <Image.ContextMenu>
                         <ContextMenu>
                             <MenuItem x:Name="SaveContextMenuItem" Header="Save Screenshot To File"

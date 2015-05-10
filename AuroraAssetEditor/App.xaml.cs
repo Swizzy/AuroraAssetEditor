@@ -13,11 +13,13 @@ namespace AuroraAssetEditor {
     using System.Windows.Interop;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
+    using AuroraAssetEditor.Classes;
 
     /// <summary>
     ///     Interaction logic for App.xaml
     /// </summary>
     public partial class App {
+        internal static FtpOperations FtpOperations = new FtpOperations();
         private static readonly Icon Icon =
             Icon.ExtractAssociatedIcon(Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(typeof(App)).Location), Path.GetFileName(Assembly.GetAssembly(typeof(App)).Location)));
 

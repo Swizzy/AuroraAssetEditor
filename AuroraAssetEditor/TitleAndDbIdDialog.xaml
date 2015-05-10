@@ -1,0 +1,32 @@
+﻿<Window x:Class="AuroraAssetEditor.TitleAndDbIdDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        SizeToContent="WidthAndHeight" WindowStartupLocation="CenterOwner">
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Text="TitleID:" Margin="0, 0, 5, 0" />
+        <TextBox Grid.Row="0" Grid.Column="1" MinWidth="100" x:Name="TitleIdBox" x:FieldModifier="private"
+                 HorizontalAlignment="Stretch" Margin="0, 0, 5, 0" PreviewTextInput="OnTextInput"
+                 TextChanged="OnTextChanged" MaxLength="8" />
+        <TextBlock Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" Text="DatabaseID:" Margin="0, 10, 5, 0" />
+        <TextBox Grid.Row="1" Grid.Column="1" MinWidth="100" x:Name="DbIdBox" x:FieldModifier="private"
+                 HorizontalAlignment="Stretch" Margin="0, 10, 5, 0" PreviewTextInput="OnTextInput"
+                 TextChanged="OnTextChanged" MaxLength="8" />
+        <WrapPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" Margin="0,15,0,0"
+                   VerticalAlignment="Bottom">
+            <Button x:Name="OkButton" IsDefault="True" Click="btnDialogOk_Click" MinWidth="60" Margin="0,0,10,0"
+                    IsEnabled="False">
+                _Ok
+            </Button>
+            <Button IsCancel="True" MinWidth="60">_Cancel</Button>
+        </WrapPanel>
+    </Grid>
+</Window>

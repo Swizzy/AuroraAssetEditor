@@ -1,4 +1,11 @@
-﻿namespace AuroraAssetEditor.Controls {
+﻿// 
+// 	CircularProgressBar.xaml.cs
+// 	AuroraAssetEditor
+// 
+// 	Created by Swizzy on 10/05/2015
+// 	Copyright (c) 2015 Swizzy. All rights reserved.
+
+namespace AuroraAssetEditor.Controls {
     using System;
     using System.Windows;
     using System.Windows.Controls;

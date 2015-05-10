@@ -13,9 +13,11 @@
         </Grid.RowDefinitions>
         <GroupBox Grid.Row="0" Header="Icon Preview" Margin="10" BorderBrush="Black"
                   HorizontalAlignment="Left" VerticalAlignment="Top" MaxHeight="84">
-            <Viewbox Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Top" MaxHeight="64" MaxWidth="64">
+            <Viewbox Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Top" MaxHeight="64"
+                     MaxWidth="64">
                 <Image x:Name="PreviewIcon" MaxHeight="64" MaxWidth="64" Width="64" Height="64"
-                       ContextMenuService.ShowOnDisabled="True" ContextMenuOpening="OnContextMenuOpening" Source="Resources/Placeholders/icon.png">
+                       ContextMenuService.ShowOnDisabled="True" ContextMenuOpening="OnContextMenuOpening"
+                       Source="Resources/Placeholders/icon.png">
                     <Image.ContextMenu>
                         <ContextMenu>
                             <MenuItem x:Name="SaveIconContextMenuItem" Header="Save Icon To File"
@@ -30,7 +32,8 @@
                   VerticalAlignment="Top" MaxWidth="440">
             <Viewbox Stretch="Uniform" HorizontalAlignment="Left" VerticalAlignment="Top" MaxWidth="420" MaxHeight="96">
                 <Image x:Name="PreviewBanner" MaxHeight="96" MaxWidth="420" Height="96" Width="420"
-                       ContextMenuService.ShowOnDisabled="True" ContextMenuOpening="OnContextMenuOpening" Source="Resources/Placeholders/banner.png">
+                       ContextMenuService.ShowOnDisabled="True" ContextMenuOpening="OnContextMenuOpening"
+                       Source="Resources/Placeholders/banner.png">
                     <Image.ContextMenu>
                         <ContextMenu>
                             <MenuItem x:Name="SaveBannerContextMenuItem" Header="Save Banner To File"

@@ -2,7 +2,7 @@
 // 	XboxUnity.cs
 // 	AuroraAssetEditor
 // 
-// 	Created by Swizzy on 09/05/2015
+// 	Created by Swizzy on 10/05/2015
 // 	Copyright (c) 2015 Swizzy. All rights reserved.
 
 namespace AuroraAssetEditor.Classes {
@@ -70,6 +70,8 @@ namespace AuroraAssetEditor.Classes {
 
             public XboxUnityAsset(UnityResponse response) { _unityResponse = response; }
 
+            public bool HaveAsset { get { return _cover != null; } }
+
             private static Image GetImage(string url) {
                 var wc = new WebClient();
                 var data = wc.DownloadData(url);
@@ -83,11 +85,8 @@ namespace AuroraAssetEditor.Classes {
                 return _cover = GetImage(_unityResponse.Url);
             }
 
-            public bool HaveAsset { get { return _cover != null; } }
-
             public override string ToString() {
-                return string.Format(_unityResponse.Official ? "Official cover for {0} Rating: {1}" : "Cover for {0} Rating: {1}", _unityResponse.Name,
-                                     _unityResponse.Rating ?? "N/A");
+                return string.Format(_unityResponse.Official ? "Official cover for {0} Rating: {1}" : "Cover for {0} Rating: {1}", _unityResponse.Name, _unityResponse.Rating ?? "N/A");
             }
         }
     }

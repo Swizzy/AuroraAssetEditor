@@ -2,7 +2,7 @@
 // 	ScreenshotsControl.xaml.cs
 // 	AuroraAssetEditor
 // 
-// 	Created by Swizzy on 04/05/2015
+// 	Created by Swizzy on 10/05/2015
 // 	Copyright (c) 2015 Swizzy. All rights reserved.
 
 namespace AuroraAssetEditor.Controls {
@@ -189,6 +189,8 @@ namespace AuroraAssetEditor.Controls {
             SaveContextMenuItem.IsEnabled = HavePreview;
             RemoveContextMenuItem.IsEnabled = HavePreview;
         }
+
+        public byte[] GetData() { return _assetFile.FileData; }
 
         private class ScreenshotDisplay {
             private readonly int _index;

@@ -11,7 +11,8 @@
         </Grid.RowDefinitions>
         <TextBlock Name="InfoLabel" Grid.Row="0" x:FieldModifier="private" HorizontalAlignment="Left">Question:</TextBlock>
         <TextBox Name="ValueBox" Grid.Row="1" MinWidth="100" x:FieldModifier="private" HorizontalAlignment="Stretch">Value</TextBox>
-        <WrapPanel Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" Margin="0,15,0,0" VerticalAlignment="Bottom">
+        <WrapPanel Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" Margin="0,15,0,0"
+                   VerticalAlignment="Bottom">
             <Button IsDefault="True" Click="btnDialogOk_Click" MinWidth="60" Margin="0,0,10,0">_Ok</Button>
             <Button IsCancel="True" MinWidth="60">_Cancel</Button>
         </WrapPanel>

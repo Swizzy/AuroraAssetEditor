@@ -46,7 +46,7 @@ namespace AuroraAssetEditor {
         public MainWindow(IEnumerable<string> args) {
             InitializeComponent();
             foreach(var mitem in SettingsMenu.Items)
-                ((MenuItem)mitem).IsEnabled = false;
+                ((MenuItem)mitem).IsEnabled = !((MenuItem)mitem).IsCheckable;
             var ver = Assembly.GetAssembly(typeof(MainWindow)).GetName().Version;
             Title = string.Format(Title, ver.Major, ver.Minor);
             Icon = App.WpfIcon;
@@ -318,7 +318,7 @@ namespace AuroraAssetEditor {
                              foreach(var t in files) {
                                  if(VerifyAuroraMagic(t))
                                      LoadAuroraAsset(t);
-                                 if(VerifyFsdMagic(t))
+                                 else if(VerifyFsdMagic(t))
                                      LoadFsdAsset(t);
                                  else if(Equals(sender, _boxart))
                                      _boxart.Load(GetImage(t, new Size(900, 600)));
@@ -480,6 +480,47 @@ namespace AuroraAssetEditor {
             if(_screenshots.HaveScreenshots || !File.Exists(filename))
                 _screenshots.Save(filename);
         }
+
+        private void FtpSettingsClick(object sender, RoutedEventArgs e) {
+            var ftp = new FtpSettings {
+                                          Owner = this
+                                      };
+            ftp.ShowDialog();
+        }
+
+        private void SaveAllAssetsFtpOnClick(object sender, RoutedEventArgs e) {
+            if(!App.FtpOperations.ConnectionEstablished) {
+                MessageBox.Show("ERROR: FTP Connection could not be established", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            var dialog = new TitleAndDbIdDialog(this);
+            if(dialog.ShowDialog() != true)
+                return;
+            var tid = dialog.TitleId;
+            var aid = dialog.AssetId;
+            var bw = new BackgroundWorker();
+            bw.DoWork += (o, args) => {
+                             try {
+                                 if (_boxart.HavePreview)
+                                     App.FtpOperations.SendAssetData(string.Format("GC{0}.asset", tid), aid, _boxart.GetData());
+                                 if (_background.HavePreview)
+                                     App.FtpOperations.SendAssetData(string.Format("BK{0}.asset", tid), aid, _background.GetData());
+                                 if (_iconBanner.HaveBanner || _iconBanner.HaveIcon)
+                                     App.FtpOperations.SendAssetData(string.Format("GL{0}.asset", tid), aid, _iconBanner.GetData());
+                                 if (_screenshots.HaveScreenshots)
+                                     App.FtpOperations.SendAssetData(string.Format("SS{0}.asset", tid), aid, _screenshots.GetData());
+                             }
+                             catch(Exception ex) {
+                                 MessageBox.Show("There was an error while processing your request, check error.log for more information...");
+                                 SaveError(ex);
+                             }
+                         };
+            bw.RunWorkerCompleted += (o, args) => BusyIndicator.Visibility = Visibility.Collapsed;
+            BusyIndicator.Visibility = Visibility.Visible;
+            bw.RunWorkerAsync();
+        }
+
+        private void FileOpening(object sender, ContextMenuEventArgs e) { FtpUpload.IsEnabled = App.FtpOperations.HaveSettings; }
     }
 
     public static class CustomCommands {

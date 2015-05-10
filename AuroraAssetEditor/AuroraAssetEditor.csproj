@@ -67,6 +67,9 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.FtpClient">
+      <HintPath>.\System.Net.FtpClient.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
@@ -85,12 +88,19 @@
     </ApplicationDefinition>
     <Compile Include="Classes\AuroraAsset.cs" />
     <Compile Include="Classes\AuroraAssetDll.cs" />
+    <Compile Include="Classes\FTPOperations.cs" />
     <Compile Include="Controls\CircularProgressBar.xaml.cs">
       <DependentUpon>CircularProgressBar.xaml</DependentUpon>
     </Compile>
     <Compile Include="Classes\FSDAsset.cs" />
     <Compile Include="Controls\IconBannerControl.xaml.cs">
       <DependentUpon>IconBannerControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FTPSettings.xaml.cs">
+      <DependentUpon>FTPSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TitleAndDbIdDialog.xaml.cs">
+      <DependentUpon>TitleAndDbIdDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="InputDialog.xaml.cs">
       <DependentUpon>InputDialog.xaml</DependentUpon>
@@ -117,6 +127,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\IconBannerControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="FTPSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TitleAndDbIdDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -170,9 +188,6 @@
     <Resource Include="Resources\Placeholders\screenshot.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Ookii.Dialogs.Wpf.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="Ookii.Dialogs.Wpf_license.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
