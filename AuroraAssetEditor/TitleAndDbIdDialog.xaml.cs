@@ -15,6 +15,7 @@ namespace AuroraAssetEditor {
     public partial class TitleAndDbIdDialog {
         public TitleAndDbIdDialog(Window owner) {
             InitializeComponent();
+            Icon = App.WpfIcon;
             Owner = owner;
         }
 

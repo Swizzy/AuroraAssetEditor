@@ -12,6 +12,7 @@ namespace AuroraAssetEditor {
     public partial class InputDialog {
         public InputDialog(Window owner, string information, string defaultValue = "") {
             InitializeComponent();
+            Icon = App.WpfIcon;
             Owner = owner;
             InfoLabel.Text = information;
             ValueBox.Text = defaultValue;

@@ -19,6 +19,7 @@ namespace AuroraAssetEditor {
     public partial class FtpSettings {
         public FtpSettings() {
             InitializeComponent();
+            Icon = App.WpfIcon;
             App.FtpOperations.StatusChanged += (sender, args) => Dispatcher.Invoke(new Action(() => Status.Text = args.StatusMessage));
             ModeBox.Items.Clear();
             ModeBox.Items.Add(FtpDataConnectionType.PASVEX);
