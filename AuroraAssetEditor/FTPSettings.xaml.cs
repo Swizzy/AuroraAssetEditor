@@ -56,6 +56,9 @@ namespace AuroraAssetEditor {
 
         private void TestConnectionClick(object sender, RoutedEventArgs e) { App.FtpOperations.TestConnection(IpBox.Text, UserBox.Text, PassBox.Text, (FtpDataConnectionType)ModeBox.SelectedItem); }
 
-        private void SaveSettingsClick(object sender, RoutedEventArgs e) { App.FtpOperations.SaveSettings(); }
+        private void SaveSettingsClick(object sender, RoutedEventArgs e) {
+            App.FtpOperations.SaveSettings();
+            DialogResult = true;
+        }
     }
 }
