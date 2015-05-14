@@ -7,6 +7,7 @@
 
 namespace AuroraAssetEditor.Classes {
     using System;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Net;
@@ -86,6 +87,12 @@ namespace AuroraAssetEditor.Classes {
                                         Credentials = new NetworkCredential(_settings.Username, _settings.Password),
                                         Host = _settings.IpAddress
                                     };
+            int port;
+            if(!int.TryParse(_settings.Port, out port)) {
+                port = 21;
+                _settings.Port = port.ToString(CultureInfo.InvariantCulture);
+            }
+            _client.Port = port;
             SendStatusChanged("Connecting to {0}...", _settings.IpAddress);
             _client.Connect();
             if(!_client.IsConnected)
