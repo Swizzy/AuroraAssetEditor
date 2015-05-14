@@ -33,9 +33,9 @@
                     <TextBox x:Name="IpBox" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch"
                              Margin="0, 5" VerticalAlignment="Center" />
                     <TextBlock Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right" Margin="10, 5, 10, 5"
-                               Text="Mode:" VerticalAlignment="Center" />
-                    <ComboBox x:Name="ModeBox" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Stretch" Margin="0, 5"
-                              VerticalAlignment="Center" />
+                               Text="Port:" VerticalAlignment="Center" />
+                    <TextBox x:Name="PortBox" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Stretch" Margin="0, 5"
+                             Text="21" VerticalAlignment="Center" />
                     <TextBlock Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" Margin="0, 5, 10, 5"
                                Text="Username:" VerticalAlignment="Center" />
                     <TextBox x:Name="UserBox" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0, 5"

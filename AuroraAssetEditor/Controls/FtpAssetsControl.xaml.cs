@@ -39,13 +39,8 @@ namespace AuroraAssetEditor.Controls {
             _iconBanner = iconBanner;
             _screenshots = screenshots;
             App.FtpOperations.StatusChanged += (sender, args) => Dispatcher.Invoke(new Action(() => Status.Text = args.StatusMessage));
-            ModeBox.Items.Clear();
-            ModeBox.Items.Add(FtpDataConnectionType.PASVEX);
-            ModeBox.Items.Add(FtpDataConnectionType.PASV);
-            ModeBox.Items.Add(FtpDataConnectionType.PORT);
             FtpAssetsBox.ItemsSource = _assetsList;
             if(!App.FtpOperations.HaveSettings) {
-                ModeBox.SelectedIndex = 0;
                 var ip = GetActiveIp();
                 var index = ip.LastIndexOf('.');
                 if(ip.Length > 0 && index > 0)
@@ -55,7 +50,7 @@ namespace AuroraAssetEditor.Controls {
                 IpBox.Text = App.FtpOperations.IpAddress;
                 UserBox.Text = App.FtpOperations.Username;
                 PassBox.Text = App.FtpOperations.Password;
-                ModeBox.SelectedItem = App.FtpOperations.Mode;
+                PortBox.Text = App.FtpOperations.Port;
             }
         }
 
@@ -78,9 +73,9 @@ namespace AuroraAssetEditor.Controls {
             var ip = IpBox.Text;
             var user = UserBox.Text;
             var pass = PassBox.Text;
-            var mode = (FtpDataConnectionType)ModeBox.SelectedItem;
+            var port = PortBox.Text;
             var bw = new BackgroundWorker();
-            bw.DoWork += (o, args) => App.FtpOperations.TestConnection(ip, user, pass, mode);
+            bw.DoWork += (o, args) => App.FtpOperations.TestConnection(ip, user, pass, port);
             bw.RunWorkerCompleted += (o, args) => _main.BusyIndicator.Visibility = Visibility.Collapsed;
             _main.BusyIndicator.Visibility = Visibility.Visible;
             Status.Text = string.Format("Running a connection test to {0}", IpBox.Text);

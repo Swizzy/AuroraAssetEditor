@@ -28,8 +28,6 @@ namespace AuroraAssetEditor.Classes {
 
         public string Password { get { return _settings.Password; } }
 
-        public FtpDataConnectionType Mode { get { return _settings.Mode; } }
-
         public bool HaveSettings { get { return _settings.Loaded; } }
 
         public bool ConnectionEstablished {
@@ -41,6 +39,8 @@ namespace AuroraAssetEditor.Classes {
                 return _client != null && _client.IsConnected;
             }
         }
+
+        public string Port { get { return _settings.Port; } }
 
         private void SendStatusChanged(string msg, params object[] param) {
             var handler = StatusChanged;
@@ -63,11 +63,11 @@ namespace AuroraAssetEditor.Classes {
             }
         }
 
-        public bool TestConnection(string ip, string user, string pass, FtpDataConnectionType mode) {
+        public bool TestConnection(string ip, string user, string pass, string port) {
             _settings.IpAddress = ip;
             _settings.Username = user;
             _settings.Password = pass;
-            _settings.Mode = mode;
+            _settings.Port = port;
             _settings.Loaded = true;
             try {
                 if(MakeConnection())
@@ -83,7 +83,6 @@ namespace AuroraAssetEditor.Classes {
 
         private bool MakeConnection() {
             _client = new FtpClient {
-                                        DataConnectionType = _settings.Mode,
                                         Credentials = new NetworkCredential(_settings.Username, _settings.Password),
                                         Host = _settings.IpAddress
                                     };
@@ -112,11 +111,11 @@ namespace AuroraAssetEditor.Classes {
                 _serializer.WriteObject(stream, _settings);
         }
 
-        public void SaveSettings(string ip, string user, string pass, FtpDataConnectionType mode) {
+        public void SaveSettings(string ip, string user, string pass, string port) {
             _settings.IpAddress = ip;
             _settings.Username = user;
             _settings.Password = pass;
-            _settings.Mode = mode;
+            _settings.Port = port;
             _settings.Loaded = true;
             SaveSettings();
         }
@@ -172,13 +171,14 @@ namespace AuroraAssetEditor.Classes {
 
         [DataContract] private class FtpSettings {
             public bool Loaded;
-            [DataMember(Name = "mode")] public FtpDataConnectionType Mode;
 
             [DataMember(Name = "ip")] public string IpAddress { get; set; }
 
             [DataMember(Name = "user")] public string Username { get; set; }
 
             [DataMember(Name = "pass")] public string Password { get; set; }
+
+            [DataMember(Name = "port")] public string Port { get; set; }
         }
     }
 }
