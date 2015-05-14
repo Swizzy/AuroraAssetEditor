@@ -15,6 +15,7 @@ namespace AuroraAssetEditor.Controls {
     using System.Text.RegularExpressions;
     using System.Threading;
     using System.Windows;
+    using System.Windows.Controls;
     using System.Windows.Threading;
     using AuroraAssetEditor.Classes;
 
@@ -375,6 +376,11 @@ namespace AuroraAssetEditor.Controls {
             SetBackground,
             SetIconBanner,
             SetScreenshots,
+        }
+
+        private void FtpAssetsBoxContextOpening(object sender, ContextMenuEventArgs e) {
+            if(FtpAssetsBox.SelectedItem == null)
+                e.Handled = true;
         }
     }
 }

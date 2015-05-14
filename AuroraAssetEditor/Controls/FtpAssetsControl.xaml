@@ -59,7 +59,7 @@
                       CanUserResizeColumns="True" CanUserResizeRows="False" AlternatingRowBackground="LightGray"
                       HeadersVisibility="Column" ColumnWidth="*" CanUserDeleteRows="False" CanUserAddRows="False"
                       SelectionMode="Single" SelectionUnit="FullRow" Background="WhiteSmoke" RowBackground="WhiteSmoke"
-                      IsReadOnly="True">
+                      IsReadOnly="True" ContextMenuOpening="FtpAssetsBoxContextOpening">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="*"/>
                     <DataGridTextColumn Header="TitleID" Binding="{Binding TitleId}" Width="Auto"/>
