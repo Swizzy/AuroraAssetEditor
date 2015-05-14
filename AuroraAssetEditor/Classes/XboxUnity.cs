@@ -126,6 +126,8 @@ namespace AuroraAssetEditor.Classes {
             [DataMember(Name = "titleid")] public string TitleId { get; set; }
 
             [DataMember(Name = "title")] public string Title { get; set; }
+
+            public override string ToString() { return string.Format("{0}: {1}", TitleId, Title); }
         }
     }
 }
