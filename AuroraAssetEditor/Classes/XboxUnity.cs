@@ -41,35 +41,6 @@ namespace AuroraAssetEditor.Classes {
             }
         }
 
-        public static XboxUnityTitle[] GetSavedTitleCache() {
-            var path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            try {
-                path = !string.IsNullOrWhiteSpace(path) ? Path.Combine(path, "AuroraAssetEditor", "titles.cache") : "titles.cache";
-                using(var stream = File.OpenRead(path))
-                    return (XboxUnityTitle[])CacheSerializer.ReadObject(stream);
-            }
-            catch {
-                return new XboxUnityTitle[0];
-            }
-        }
-
-        public static XboxUnityTitle[] UpdateTitleCache() {
-            var path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            try {
-                path = !string.IsNullOrWhiteSpace(path) ? Path.Combine(path, "AuroraAssetEditor", "titles.cache") : "titles.cache";
-                var wc = new WebClient();
-                wc.DownloadFile("http://xboxunity.net/api/gettitle", path + ".dl");
-                if(!File.Exists(path + ".dl") || new FileInfo(path + ".dl").Length <= 10)
-                    return GetSavedTitleCache();
-                File.Copy(path + ".dl", path, true);
-                File.Delete(path + ".dl");
-                return GetSavedTitleCache();
-            }
-            catch {
-                return GetSavedTitleCache();
-            }
-        }
-
         public static string GetHomebrewTitleFromFtp(string path) {
             var data = App.FtpOperations.GetAssetData("GameCoverInfo.bin", path);
             if(data == null || data.Length < 10)
@@ -133,6 +104,11 @@ namespace AuroraAssetEditor.Classes {
         }
 
         [DataContract] public class XboxUnityTitle {
+            public XboxUnityTitle(int titleId, string titleName) {
+                Title = titleName;
+                TitleId = titleId.ToString("X08");
+            }
+
             [DataMember(Name = "titleid")] public string TitleId { get; set; }
 
             [DataMember(Name = "title")] public string Title { get; set; }

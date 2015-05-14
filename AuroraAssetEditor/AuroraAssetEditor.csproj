@@ -67,6 +67,10 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.SQLite">
+      <HintPath>.\System.Data.SQLite.dll</HintPath>
+    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net.FtpClient">
       <HintPath>.\System.Net.FtpClient.dll</HintPath>
@@ -89,6 +93,7 @@
     </ApplicationDefinition>
     <Compile Include="Classes\AuroraAsset.cs" />
     <Compile Include="Classes\AuroraAssetDll.cs" />
+    <Compile Include="Classes\AuroraDbManager.cs" />
     <Compile Include="Classes\FTPOperations.cs" />
     <Compile Include="Classes\ThreadSafeObservableCollection.cs" />
     <Compile Include="Classes\WpfControlThreadingExtensions.cs" />

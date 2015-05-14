@@ -8,6 +8,7 @@
 namespace AuroraAssetEditor.Controls {
     using System;
     using System.ComponentModel;
+    using System.IO;
     using System.Linq;
     using System.Net.NetworkInformation;
     using System.Net.Sockets;
@@ -90,9 +91,14 @@ namespace AuroraAssetEditor.Controls {
             var bw = new BackgroundWorker();
             bw.DoWork += (o, args) => {
                              try {
-                                 App.FtpOperations.NavigateToGameDataDir();
+                                 var path = Path.Combine(Path.GetTempPath(), "Content.db");
+                                 if(!App.FtpOperations.DownloadContentDb(path))
+                                     return;
+                                 App.TitleCache = AuroraDbManager.GetDbTitles(path);
+                                 if(!App.FtpOperations.NavigateToGameDataDir())
+                                     return;
                                  foreach(var dir in App.FtpOperations.GetDirList()) {
-                                     var path = dir;
+                                     path = dir;
                                      Dispatcher.Invoke(new Action(() => Status.Text = string.Format("Processing {0}", path)));
                                      var tmp = FtpAsset.BuildAsset(path);
                                      if(tmp != null)
@@ -334,12 +340,8 @@ namespace AuroraAssetEditor.Controls {
                                            TitleId = path.Substring(0, 8),
                                            DatabaseId = path.Substring(9)
                                        };
-                if(ret.TitleId == "00000000")
-                    ret.Title = XboxUnity.GetHomebrewTitleFromFtp(path);
-                else {
-                    var unity = App.TitleCache.Where(title => title.TitleId.Equals(ret.TitleId, StringComparison.CurrentCultureIgnoreCase)).ToArray();
-                    ret.Title = unity.Length > 0 ? unity[0].Title : "N/A";
-                }
+                var unity = App.TitleCache.Where(title => title.TitleId.Equals(ret.TitleId, StringComparison.CurrentCultureIgnoreCase)).ToArray();
+                ret.Title = unity.Length > 0 ? unity[0].Title : "N/A";
                 return ret;
             }
 

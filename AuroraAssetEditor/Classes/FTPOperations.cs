@@ -176,6 +176,33 @@ namespace AuroraAssetEditor.Classes {
             return true;
         }
 
+        public bool DownloadContentDb(string path) {
+            if(_client == null || !_client.IsConnected) {
+                if(!MakeConnection()) {
+                    SendStatusChanged("Connection failed to {0}", _settings.IpAddress);
+                    return false; // Not connected
+                }
+            }
+            if(_client == null)
+                return false;
+            const string dir = "/Game/Data/DataBases/";
+            SendStatusChanged("Changing working directory to {0}...", dir);
+            _client.SetWorkingDirectory(dir);
+            if(!_client.GetWorkingDirectory().Equals(dir, StringComparison.CurrentCultureIgnoreCase))
+                return false;
+            var size = (from item in _client.GetListing() where item.Name.Equals("Content.db", StringComparison.CurrentCultureIgnoreCase) select (int)item.Size).FirstOrDefault();
+            if(size <= 0)
+                return false;
+            var data = new byte[size];
+            var offset = 0;
+            using(var stream = _client.OpenRead("Content.db")) {
+                while(offset < data.Length)
+                    offset += stream.Read(data, offset, data.Length - offset);
+            }
+            File.WriteAllBytes(path, data);
+            return true;
+        }
+
         [DataContract] private class FtpSettings {
             public bool Loaded;
 

@@ -6,7 +6,6 @@
 // 	Copyright (c) 2015 Swizzy. All rights reserved.
 
 namespace AuroraAssetEditor {
-    using System.ComponentModel;
     using System.Drawing;
     using System.IO;
     using System.Reflection;
@@ -28,12 +27,6 @@ namespace AuroraAssetEditor {
         internal static readonly ImageSource WpfIcon = Imaging.CreateBitmapSourceFromHIcon(Icon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
         internal static XboxUnity.XboxUnityTitle[] TitleCache;
 
-        private void AppStart(object sender, StartupEventArgs e) {
-            TitleCache = XboxUnity.GetSavedTitleCache();
-            var bw = new BackgroundWorker();
-            bw.DoWork += (o, args) => { TitleCache = XboxUnity.UpdateTitleCache(); };
-            bw.RunWorkerAsync();
-            new MainWindow(e.Args).Show();
-        }
+        private void AppStart(object sender, StartupEventArgs e) { new MainWindow(e.Args).Show(); }
     }
 }
