@@ -12,6 +12,7 @@ namespace AuroraAssetEditor.Classes {
     using System.Data.SQLite;
     using System.IO;
     using System.Linq;
+    using System.Threading;
 
     internal static class AuroraDbManager {
         private static SQLiteConnection _content;
@@ -38,9 +39,19 @@ namespace AuroraAssetEditor.Classes {
 
         public static XboxUnity.XboxUnityTitle[] GetDbTitles(string path) {
             ConnectToContent(path);
+            var ret = GetContentItems().Select(item => new XboxUnity.XboxUnityTitle(item.TitleId, item.TitleName)).ToArray();
             _content.Close();
-            File.Delete(path);
-            return GetContentItems().Select(item => new XboxUnity.XboxUnityTitle(item.TitleId, item.TitleName)).ToArray();
+            GC.Collect();
+            while(true) {
+                try {
+                    File.Delete(path);
+                    break;
+                }
+                catch(IOException) {
+                    Thread.Sleep(100);
+                }
+            }
+            return ret;
         }
 
         private static IEnumerable<ContentItem> GetContentItems() { return GetContentDataTable("SELECT * FROM ContentItems").Select().Select(row => new ContentItem(row)).ToArray(); }
