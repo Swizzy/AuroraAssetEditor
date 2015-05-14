@@ -61,7 +61,7 @@ namespace AuroraAssetEditor.Classes {
                 wc.DownloadFile("http://xboxunity.net/api/gettitle", path + ".dl");
                 if(!File.Exists(path + ".dl") || new FileInfo(path + ".dl").Length <= 10)
                     return GetSavedTitleCache();
-                File.Copy(path + ".dl", path);
+                File.Copy(path + ".dl", path, true);
                 File.Delete(path + ".dl");
                 return GetSavedTitleCache();
             }
