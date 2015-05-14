@@ -5,6 +5,7 @@ v1.1
  + Added support for downloading Assets from xbox.com and/or Xboxunity.net
  + Added an icon thanks to RAP7HOR
  + Moved all processing to a background thread and added a busy indicator to make the application not freeze and such...
+ + Added FTP Support, you can now load/save your assets directly from your network using FTP (requires that you are actually running Aurora for it to work)
 
 v1.0
  + Initial release
