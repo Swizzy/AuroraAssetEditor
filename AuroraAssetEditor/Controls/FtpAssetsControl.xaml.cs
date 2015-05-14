@@ -324,6 +324,10 @@ namespace AuroraAssetEditor.Controls {
             bw.RunWorkerAsync();
         }
 
+        private void OnDragEnter(object sender, DragEventArgs e) { _main.OnDragEnter(sender, e); }
+
+        private void OnDrop(object sender, DragEventArgs e) { _main.DragDrop(this, e); }
+
         internal class FtpAsset {
             public string TitleId { get; private set; }
 
