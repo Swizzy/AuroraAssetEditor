@@ -9,7 +9,6 @@ namespace AuroraAssetEditor.Controls {
     using System;
     using System.ComponentModel;
     using System.Linq;
-    using System.Net.FtpClient;
     using System.Net.NetworkInformation;
     using System.Net.Sockets;
     using System.Text.RegularExpressions;
@@ -335,7 +334,7 @@ namespace AuroraAssetEditor.Controls {
                                            TitleId = path.Substring(0, 8),
                                            DatabaseId = path.Substring(9)
                                        };
-                var unity = App.TitleCache.Where(title => title.TitleId == ret.TitleId).ToArray();
+                var unity = App.TitleCache.Where(title => title.TitleId.Equals(ret.TitleId, StringComparison.CurrentCultureIgnoreCase)).ToArray();
                 ret.Title = unity.Length > 0 ? unity[0].Title : "N/A";
                 return ret;
             }
