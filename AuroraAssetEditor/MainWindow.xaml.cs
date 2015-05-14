@@ -274,13 +274,65 @@ namespace AuroraAssetEditor {
             _iconBanner.Reset();
         }
 
-        private void SaveBoxartOnClick(object sender, RoutedEventArgs e) { _boxart.Save(); }
+        private void SaveBoxartOnClick(object sender, RoutedEventArgs e) {
+            var bw = new BackgroundWorker();
+            bw.DoWork += (o, args) => {
+                             try {
+                                 _boxart.Save();
+                             }
+                             catch(Exception ex) {
+                                 SaveError(ex);
+                             }
+                         };
+            bw.RunWorkerCompleted += (o, args) => BusyIndicator.Visibility = Visibility.Collapsed;
+            BusyIndicator.Visibility = Visibility.Visible;
+            bw.RunWorkerAsync();
+        }
 
-        private void SaveBackgroundOnClick(object sender, RoutedEventArgs e) { _background.Save(); }
+        private void SaveBackgroundOnClick(object sender, RoutedEventArgs e) {
+            var bw = new BackgroundWorker();
+            bw.DoWork += (o, args) => {
+                             try {
+                                 _background.Save();
+                             }
+                             catch(Exception ex) {
+                                 SaveError(ex);
+                             }
+                         };
+            bw.RunWorkerCompleted += (o, args) => BusyIndicator.Visibility = Visibility.Collapsed;
+            BusyIndicator.Visibility = Visibility.Visible;
+            bw.RunWorkerAsync();
+        }
 
-        private void SaveScreenshotsOnClick(object sender, RoutedEventArgs e) { _screenshots.Save(); }
+        private void SaveScreenshotsOnClick(object sender, RoutedEventArgs e) {
+            var bw = new BackgroundWorker();
+            bw.DoWork += (o, args) => {
+                             try {
+                                 _screenshots.Save();
+                             }
+                             catch(Exception ex) {
+                                 SaveError(ex);
+                             }
+                         };
+            bw.RunWorkerCompleted += (o, args) => BusyIndicator.Visibility = Visibility.Collapsed;
+            BusyIndicator.Visibility = Visibility.Visible;
+            bw.RunWorkerAsync();
+        }
 
-        private void SaveIconBannerOnClick(object sender, RoutedEventArgs e) { _iconBanner.Save(); }
+        private void SaveIconBannerOnClick(object sender, RoutedEventArgs e) {
+            var bw = new BackgroundWorker();
+            bw.DoWork += (o, args) => {
+                             try {
+                                 _iconBanner.Save();
+                             }
+                             catch(Exception ex) {
+                                 SaveError(ex);
+                             }
+                         };
+            bw.RunWorkerCompleted += (o, args) => BusyIndicator.Visibility = Visibility.Collapsed;
+            BusyIndicator.Visibility = Visibility.Visible;
+            bw.RunWorkerAsync();
+        }
 
         private void ExitOnClick(object sender, RoutedEventArgs e) { Close(); }
 
@@ -469,18 +521,30 @@ namespace AuroraAssetEditor {
                                                    };
             if(fsd.ShowDialog(this) != true)
                 return;
-            var filename = Path.Combine(fsd.SelectedPath, string.Format("GC{0}.asset", ipd.Value));
-            if(_boxart.HavePreview || !File.Exists(filename))
-                _boxart.Save(filename);
-            filename = Path.Combine(fsd.SelectedPath, string.Format("BK{0}.asset", ipd.Value));
-            if(_background.HavePreview || !File.Exists(filename))
-                _background.Save(filename);
-            filename = Path.Combine(fsd.SelectedPath, string.Format("GL{0}.asset", ipd.Value));
-            if(_iconBanner.HaveBanner || _iconBanner.HaveIcon || !File.Exists(filename))
-                _iconBanner.Save(filename);
-            filename = Path.Combine(fsd.SelectedPath, string.Format("SS{0}.asset", ipd.Value));
-            if(_screenshots.HaveScreenshots || !File.Exists(filename))
-                _screenshots.Save(filename);
+            var name = ipd.Value;
+            var bw = new BackgroundWorker();
+            bw.DoWork += (o, args) => {
+                             try {
+                                 var filename = Path.Combine(fsd.SelectedPath, string.Format("GC{0}.asset", name));
+                                 if(_boxart.HavePreview || !File.Exists(filename))
+                                     _boxart.Save(filename);
+                                 filename = Path.Combine(fsd.SelectedPath, string.Format("BK{0}.asset", name));
+                                 if(_background.HavePreview || !File.Exists(filename))
+                                     _background.Save(filename);
+                                 filename = Path.Combine(fsd.SelectedPath, string.Format("GL{0}.asset", name));
+                                 if(_iconBanner.HaveBanner || _iconBanner.HaveIcon || !File.Exists(filename))
+                                     _iconBanner.Save(filename);
+                                 filename = Path.Combine(fsd.SelectedPath, string.Format("SS{0}.asset", name));
+                                 if(_screenshots.HaveScreenshots || !File.Exists(filename))
+                                     _screenshots.Save(filename);
+                             }
+                             catch(Exception ex) {
+                                 SaveError(ex);
+                             }
+                         };
+            bw.RunWorkerCompleted += (o, args) => BusyIndicator.Visibility = Visibility.Collapsed;
+            BusyIndicator.Visibility = Visibility.Visible;
+            bw.RunWorkerAsync();
         }
 
         private void SaveAllAssetsFtpOnClick(object sender, RoutedEventArgs e) {
