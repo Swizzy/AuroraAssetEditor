@@ -10,6 +10,7 @@ namespace AuroraAssetEditor.Classes {
     using System.Collections.Generic;
     using System.Data;
     using System.Data.SQLite;
+    using System.IO;
     using System.Linq;
 
     internal static class AuroraDbManager {
@@ -37,6 +38,8 @@ namespace AuroraAssetEditor.Classes {
 
         public static XboxUnity.XboxUnityTitle[] GetDbTitles(string path) {
             ConnectToContent(path);
+            _content.Close();
+            File.Delete(path);
             return GetContentItems().Select(item => new XboxUnity.XboxUnityTitle(item.TitleId, item.TitleName)).ToArray();
         }
 

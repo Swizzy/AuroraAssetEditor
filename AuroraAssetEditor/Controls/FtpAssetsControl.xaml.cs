@@ -91,7 +91,7 @@ namespace AuroraAssetEditor.Controls {
             var bw = new BackgroundWorker();
             bw.DoWork += (o, args) => {
                              try {
-                                 var path = Path.Combine(Path.GetTempPath(), "Content.db");
+                                 var path = Path.Combine(Path.GetTempPath(), "AuroraAssetEditor.db");
                                  if(!App.FtpOperations.DownloadContentDb(path))
                                      return;
                                  App.TitleCache = AuroraDbManager.GetDbTitles(path);
