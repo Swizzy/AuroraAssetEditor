@@ -8,6 +8,7 @@
 namespace AuroraAssetEditor.Classes {
     using System;
     using System.IO;
+    using System.Linq;
     using System.Net;
     using System.Net.FtpClient;
     using System.Runtime.Serialization;
@@ -69,10 +70,8 @@ namespace AuroraAssetEditor.Classes {
             _settings.Mode = mode;
             _settings.Loaded = true;
             try {
-                if(MakeConnection()) {
-                    //SendStatusChanged("Connection test Successful!");
+                if(MakeConnection())
                     return true;
-                }
                 SendStatusChanged("Connection test Failed...");
                 return false;
             }
@@ -123,12 +122,14 @@ namespace AuroraAssetEditor.Classes {
         }
 
         public bool NavigateToGameDataDir() {
-            if(!_client.IsConnected) {
+            if(_client == null || !_client.IsConnected) {
                 if(!MakeConnection()) {
                     SendStatusChanged("Connection failed to {0}", _settings.IpAddress);
                     return false; // Not connected
                 }
             }
+            if(_client == null)
+                return false;
             const string dir = "/Game/Data/GameData/";
             SendStatusChanged("Changing working directory to {0}...", dir);
             _client.SetWorkingDirectory(dir);
@@ -144,17 +145,19 @@ namespace AuroraAssetEditor.Classes {
             return _client.GetWorkingDirectory().Equals(dir, StringComparison.CurrentCultureIgnoreCase);
         }
 
-        public string[] GetDirList() { return _client.GetNameListing(); }
+        public string[] GetDirList() { return (from item in _client.GetListing() where item.Type == FtpFileSystemObjectType.Directory select item.Name).ToArray(); }
 
         public byte[] GetAssetData(string file, string assetDir) {
             if(!NavigateToAssetDir(assetDir))
                 return new byte[0];
-            var size = _client.GetFileSize(file);
+            var size = (from item in _client.GetListing() where item.Name.Equals(file, StringComparison.CurrentCultureIgnoreCase) select (int)item.Size).FirstOrDefault();
+            if(size <= 0)
+                return new byte[0];
             var data = new byte[size];
             var offset = 0;
             using(var stream = _client.OpenRead(file)) {
-                while(offset < size)
-                    offset += stream.Read(data, offset, (int)(size - offset));
+                while(offset < data.Length)
+                    offset += stream.Read(data, offset, data.Length - offset);
             }
             return data;
         }

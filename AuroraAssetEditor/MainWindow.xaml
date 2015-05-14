@@ -32,17 +32,17 @@
                 <MenuItem Header="Settings" x:Name="SettingsMenu">
                     <MenuItem x:Name="AutoResizeImages" Header="Auto Resize Images" IsCheckable="True" IsChecked="True" />
                     <MenuItem x:Name="UseCompression" Header="Use Compression" IsCheckable="True" IsChecked="True" />
-                    <MenuItem Header="FTP Settings" Click="FtpSettingsClick" />
                 </MenuItem>
                 <MenuItem Header="Edit" x:Name="EditMenu" SubmenuOpened="EditMenuOpened" />
             </Menu>
             <TabControl Grid.Row="1" HorizontalAlignment="Stretch" Margin="10" VerticalAlignment="Stretch"
                         SelectionChanged="TabChanged">
-                <TabItem Header="Boxart/Cover" x:Name="BoxartTab" x:FieldModifier="private" />
-                <TabItem Header="Background" x:Name="BackgroundTab" x:FieldModifier="private" />
-                <TabItem Header="Icon/Banner" x:Name="IconBannerTab" x:FieldModifier="private" />
-                <TabItem Header="Screenshots" x:Name="ScreenshotsTab" x:FieldModifier="private" />
+                <TabItem Header="Boxart/Cover" x:Name="BoxartTab" />
+                <TabItem Header="Background" x:Name="BackgroundTab" />
+                <TabItem Header="Icon/Banner" x:Name="IconBannerTab" />
+                <TabItem Header="Screenshots" x:Name="ScreenshotsTab" />
                 <TabItem Header="Online Assets" x:Name="OnlineAssetsTab" x:FieldModifier="private" />
+                <TabItem Header="FTP Assets" x:Name="FtpAssetsTab" x:FieldModifier="private" />
             </TabControl>
         </Grid>
         <Grid x:Name="BusyIndicator" ZIndex="1" Visibility="Collapsed">

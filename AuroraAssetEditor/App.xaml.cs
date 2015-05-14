@@ -2,10 +2,11 @@
 // 	App.xaml.cs
 // 	AuroraAssetEditor
 // 
-// 	Created by Swizzy on 04/05/2015
+// 	Created by Swizzy on 08/05/2015
 // 	Copyright (c) 2015 Swizzy. All rights reserved.
 
 namespace AuroraAssetEditor {
+    using System.ComponentModel;
     using System.Drawing;
     using System.IO;
     using System.Reflection;
@@ -19,12 +20,20 @@ namespace AuroraAssetEditor {
     ///     Interaction logic for App.xaml
     /// </summary>
     public partial class App {
-        internal static FtpOperations FtpOperations = new FtpOperations();
+        internal static readonly FtpOperations FtpOperations = new FtpOperations();
+
         private static readonly Icon Icon =
             Icon.ExtractAssociatedIcon(Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(typeof(App)).Location), Path.GetFileName(Assembly.GetAssembly(typeof(App)).Location)));
 
         internal static readonly ImageSource WpfIcon = Imaging.CreateBitmapSourceFromHIcon(Icon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+        internal static XboxUnity.XboxUnityTitle[] TitleCache;
 
-        private void AppStart(object sender, StartupEventArgs e) { new MainWindow(e.Args).Show(); }
+        private void AppStart(object sender, StartupEventArgs e) {
+            TitleCache = XboxUnity.GetSavedTitleCache();
+            var bw = new BackgroundWorker();
+            bw.DoWork += (o, args) => { TitleCache = XboxUnity.UpdateTitleCache(); };
+            bw.RunWorkerAsync();
+            new MainWindow(e.Args).Show();
+        }
     }
 }

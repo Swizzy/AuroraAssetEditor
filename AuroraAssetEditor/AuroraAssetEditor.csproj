@@ -90,15 +90,17 @@
     <Compile Include="Classes\AuroraAsset.cs" />
     <Compile Include="Classes\AuroraAssetDll.cs" />
     <Compile Include="Classes\FTPOperations.cs" />
+    <Compile Include="Classes\ThreadSafeObservableCollection.cs" />
+    <Compile Include="Classes\WpfControlThreadingExtensions.cs" />
     <Compile Include="Controls\CircularProgressBar.xaml.cs">
       <DependentUpon>CircularProgressBar.xaml</DependentUpon>
     </Compile>
     <Compile Include="Classes\FSDAsset.cs" />
+    <Compile Include="Controls\FtpAssetsControl.xaml.cs">
+      <DependentUpon>FtpAssetsControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\IconBannerControl.xaml.cs">
       <DependentUpon>IconBannerControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="FTPSettings.xaml.cs">
-      <DependentUpon>FTPSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="TitleAndDbIdDialog.xaml.cs">
       <DependentUpon>TitleAndDbIdDialog.xaml</DependentUpon>
@@ -127,13 +129,13 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\FtpAssetsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\IconBannerControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="FTPSettings.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="TitleAndDbIdDialog.xaml">
       <Generator>MSBuild:Compile</Generator>

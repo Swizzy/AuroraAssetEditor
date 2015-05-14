@@ -1,0 +1,90 @@
+﻿<UserControl x:Class="AuroraAssetEditor.Controls.FtpAssetsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" Background="WhiteSmoke">
+    <Grid Margin="10, 10, 10, 0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <GroupBox Grid.Column="0" Header="Settings" BorderBrush="Black">
+                <Grid Margin="10, 0, 10, 5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="150" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Margin="0, 5, 10, 5"
+                               Text="IP Address:" VerticalAlignment="Center" />
+                    <TextBox x:Name="IpBox" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch"
+                             Margin="0, 5" VerticalAlignment="Center" />
+                    <TextBlock Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right" Margin="10, 5, 10, 5"
+                               Text="Mode:" VerticalAlignment="Center" />
+                    <ComboBox x:Name="ModeBox" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Stretch" Margin="0, 5"
+                              VerticalAlignment="Center" />
+                    <TextBlock Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" Margin="0, 5, 10, 5"
+                               Text="Username:" VerticalAlignment="Center" />
+                    <TextBox x:Name="UserBox" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0, 5"
+                             Text="xboxftp" VerticalAlignment="Center" />
+                    <TextBlock Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right" Margin="10, 5, 10, 5"
+                               Text="Password:" VerticalAlignment="Center" />
+                    <TextBox x:Name="PassBox" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Stretch" Margin="0, 5"
+                             Text="xboxftp" VerticalAlignment="Center" />
+                    <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
+                        <Button Content="Test Connection" Margin="0, 5" Padding="10, 5" Click="TestConnectionClick" />
+                        <Button Content="Save Settings" Margin="5, 5" Padding="10, 5" Click="SaveSettingsClick" />
+                    </StackPanel>
+                    <Button Grid.Row="2" Grid.Column="3" Content="Get Available Assets" Margin="0, 5" Padding="10, 5"
+                            HorizontalAlignment="Right" Click="GetAssetsClick" />
+                </Grid>
+            </GroupBox>
+        </Grid>
+        <GroupBox Header="Available Assets" BorderBrush="Black" Grid.Row="1">
+            <DataGrid x:Name="FtpAssetsBox" IsTextSearchEnabled="False" AlternationCount="2"
+                      AutoGenerateColumns="False" CanUserSortColumns="True" CanUserReorderColumns="True"
+                      CanUserResizeColumns="True" CanUserResizeRows="False" AlternatingRowBackground="LightGray"
+                      HeadersVisibility="Column" ColumnWidth="*" CanUserDeleteRows="False" CanUserAddRows="False"
+                      SelectionMode="Single" SelectionUnit="FullRow" Background="WhiteSmoke" RowBackground="WhiteSmoke"
+                      IsReadOnly="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="*"/>
+                    <DataGridTextColumn Header="TitleID" Binding="{Binding TitleId}" Width="Auto"/>
+                    <DataGridTextColumn Header="DatabaseID" Binding="{Binding DatabaseId}" Width="Auto"/>
+                </DataGrid.Columns>
+                <DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Get All Assets" Click="GetFtpAssetsClick"/>
+                        <MenuItem Header="Get Boxart" Click="GetBoxartClick"/>
+                        <MenuItem Header="Get Background" Click="GetBackgroundClick"/>
+                        <MenuItem Header="Get Icon/Banner" Click="GetIconBannerClick"/>
+                        <MenuItem Header="Get Screenshots" Click="GetScreenshotsClick"/>
+                        <Separator/>
+                        <MenuItem Header="Save All Assets" Click="SaveFtpAssetsClick"/>
+                        <MenuItem Header="Save Boxart" Click="SaveBoxartClick"/>
+                        <MenuItem Header="Save Background" Click="SaveBackgroundClick"/>
+                        <MenuItem Header="Save Icon/Banner" Click="SaveIconBannerClick"/>
+                        <MenuItem Header="Save Screenshots" Click="SaveScreenshotsClick"/>
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
+            </DataGrid>
+        </GroupBox>
+        <StatusBar Grid.Row="2" HorizontalAlignment="Stretch"
+                   VerticalAlignment="Bottom" Background="WhiteSmoke">
+            <TextBlock Name="Status" x:FieldModifier="private" />
+        </StatusBar>
+    </Grid>
+</UserControl>

@@ -17,6 +17,7 @@ namespace AuroraAssetEditor.Classes {
 
     internal static class XboxUnity {
         private static readonly DataContractJsonSerializer Serializer = new DataContractJsonSerializer(typeof(UnityResponse[]));
+        private static readonly DataContractJsonSerializer CacheSerializer = new DataContractJsonSerializer(typeof(XboxUnityTitle[]));
 
         private static string GetUnityUrl(string searchTerm) { return string.Format("http://xboxunity.net/api/Covers/{0}", HttpUtility.UrlEncode(searchTerm)); }
 
@@ -37,6 +38,35 @@ namespace AuroraAssetEditor.Classes {
                     MainWindow.SaveError(ex);
                     return new XboxUnityAsset[0];
                 }
+            }
+        }
+
+        public static XboxUnityTitle[] GetSavedTitleCache() {
+            var path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            try {
+                path = !string.IsNullOrWhiteSpace(path) ? Path.Combine(path, "AuroraAssetEditor", "titles.cache") : "titles.cache";
+                using(var stream = File.OpenRead(path))
+                    return (XboxUnityTitle[])CacheSerializer.ReadObject(stream);
+            }
+            catch {
+                return new XboxUnityTitle[0];
+            }
+        }
+
+        public static XboxUnityTitle[] UpdateTitleCache() {
+            var path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            try {
+                path = !string.IsNullOrWhiteSpace(path) ? Path.Combine(path, "AuroraAssetEditor", "titles.cache") : "titles.cache";
+                var wc = new WebClient();
+                wc.DownloadFile("http://xboxunity.net/api/gettitle", path + ".dl");
+                if(!File.Exists(path + ".dl") || new FileInfo(path + ".dl").Length <= 10)
+                    return GetSavedTitleCache();
+                File.Copy(path + ".dl", path);
+                File.Delete(path + ".dl");
+                return GetSavedTitleCache();
+            }
+            catch {
+                return GetSavedTitleCache();
             }
         }
 
@@ -72,6 +102,8 @@ namespace AuroraAssetEditor.Classes {
 
             public bool HaveAsset { get { return _cover != null; } }
 
+            public string Title { get { return _unityResponse.Name; } }
+
             private static Image GetImage(string url) {
                 var wc = new WebClient();
                 var data = wc.DownloadData(url);
@@ -88,6 +120,12 @@ namespace AuroraAssetEditor.Classes {
             public override string ToString() {
                 return string.Format(_unityResponse.Official ? "Official cover for {0} Rating: {1}" : "Cover for {0} Rating: {1}", _unityResponse.Name, _unityResponse.Rating ?? "N/A");
             }
+        }
+
+        [DataContract] public class XboxUnityTitle {
+            [DataMember(Name = "titleid")] public string TitleId { get; set; }
+
+            [DataMember(Name = "title")] public string Title { get; set; }
         }
     }
 }

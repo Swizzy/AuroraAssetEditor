@@ -137,6 +137,7 @@ namespace AuroraAssetEditor {
             #endregion
 
             OnlineAssetsTab.Content = new OnlineAssetsControl(this, _boxart, _background, _iconBanner, _screenshots);
+            FtpAssetsTab.Content = new FtpAssetsControl(this, _boxart, _background, _iconBanner, _screenshots);
 
             var bw = new BackgroundWorker();
             bw.DoWork += (sender, e) => {
@@ -434,6 +435,7 @@ namespace AuroraAssetEditor {
                 EditMenu.ItemsSource = _screenshotsMenu;
             else
                 EditMenu.ItemsSource = null;
+            EditMenu.IsEnabled = !FtpAssetsTab.IsSelected;
         }
 
         private void EditMenuOpened(object sender, RoutedEventArgs e) {
@@ -481,13 +483,6 @@ namespace AuroraAssetEditor {
                 _screenshots.Save(filename);
         }
 
-        private void FtpSettingsClick(object sender, RoutedEventArgs e) {
-            var ftp = new FtpSettings {
-                                          Owner = this
-                                      };
-            ftp.ShowDialog();
-        }
-
         private void SaveAllAssetsFtpOnClick(object sender, RoutedEventArgs e) {
             if(!App.FtpOperations.ConnectionEstablished) {
                 MessageBox.Show("ERROR: FTP Connection could not be established", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -501,13 +496,13 @@ namespace AuroraAssetEditor {
             var bw = new BackgroundWorker();
             bw.DoWork += (o, args) => {
                              try {
-                                 if (_boxart.HavePreview)
+                                 if(_boxart.HavePreview)
                                      App.FtpOperations.SendAssetData(string.Format("GC{0}.asset", tid), aid, _boxart.GetData());
-                                 if (_background.HavePreview)
+                                 if(_background.HavePreview)
                                      App.FtpOperations.SendAssetData(string.Format("BK{0}.asset", tid), aid, _background.GetData());
-                                 if (_iconBanner.HaveBanner || _iconBanner.HaveIcon)
+                                 if(_iconBanner.HaveBanner || _iconBanner.HaveIcon)
                                      App.FtpOperations.SendAssetData(string.Format("GL{0}.asset", tid), aid, _iconBanner.GetData());
-                                 if (_screenshots.HaveScreenshots)
+                                 if(_screenshots.HaveScreenshots)
                                      App.FtpOperations.SendAssetData(string.Format("SS{0}.asset", tid), aid, _screenshots.GetData());
                              }
                              catch(Exception ex) {
