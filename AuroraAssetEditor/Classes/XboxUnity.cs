@@ -70,6 +70,16 @@ namespace AuroraAssetEditor.Classes {
             }
         }
 
+        public static string GetHomebrewTitleFromFtp(string path) {
+            var data = App.FtpOperations.GetAssetData("GameCoverInfo.bin", path);
+            if(data == null || data.Length < 10)
+                return "N/A";
+            using(var ms = new MemoryStream(data)) {
+                var response = (UnityResponse[])Serializer.ReadObject(ms);
+                return response.Length <= 0 ? "N/A" : response[0].Name;
+            }
+        }
+
         [DataContract] internal class UnityResponse {
             [DataMember(Name = "titleid")] public string TitleId { get; set; }
 

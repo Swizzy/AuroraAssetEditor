@@ -190,7 +190,7 @@ namespace AuroraAssetEditor.Controls {
                                              }
                                              if(shouldHideWhenDone && isGet)
                                                  Dispatcher.InvokeIfRequired(() => Status.Text = "Finished grabbing assets from FTP", DispatcherPriority.Normal);
-                                             else if (shouldHideWhenDone)
+                                             else if(shouldHideWhenDone)
                                                  Dispatcher.InvokeIfRequired(() => Status.Text = "Finished saving assets to FTP", DispatcherPriority.Normal);
                                          }
                                          else {
@@ -204,7 +204,7 @@ namespace AuroraAssetEditor.Controls {
                                                      isGet = false;
                                                      break;
                                              }
-                                             if (isGet)
+                                             if(isGet)
                                                  Dispatcher.InvokeIfRequired(() => Status.Text = "Failed getting asset data... See error.log for more information...", DispatcherPriority.Normal);
                                              else
                                                  Dispatcher.InvokeIfRequired(() => Status.Text = "Failed saving asset data... See error.log for more information...", DispatcherPriority.Normal);
@@ -334,8 +334,12 @@ namespace AuroraAssetEditor.Controls {
                                            TitleId = path.Substring(0, 8),
                                            DatabaseId = path.Substring(9)
                                        };
-                var unity = App.TitleCache.Where(title => title.TitleId.Equals(ret.TitleId, StringComparison.CurrentCultureIgnoreCase)).ToArray();
-                ret.Title = unity.Length > 0 ? unity[0].Title : "N/A";
+                if(ret.TitleId == "00000000")
+                    ret.Title = XboxUnity.GetHomebrewTitleFromFtp(path);
+                else {
+                    var unity = App.TitleCache.Where(title => title.TitleId.Equals(ret.TitleId, StringComparison.CurrentCultureIgnoreCase)).ToArray();
+                    ret.Title = unity.Length > 0 ? unity[0].Title : "N/A";
+                }
                 return ret;
             }
 
