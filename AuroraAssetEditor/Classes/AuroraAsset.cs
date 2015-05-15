@@ -70,6 +70,13 @@ namespace AuroraAssetEditor.Classes {
             }
 
             public AssetFile(byte[] data) {
+                if(data == null) {
+                    Header = new AssetPackHeader(0x52584541, 1, 0);
+                    EntryTable = new AssetPackEntryTable();
+                    DataOffset = 20 + (EntryTable.Entries.Length * 64);
+                    DataOffset += 2048 - (DataOffset % 2048);
+                    return;
+                }
                 if(data.Length < 2048)
                     throw new Exception("Invalid asset file size!");
                 var magic = Swap(BitConverter.ToUInt32(data, 0));

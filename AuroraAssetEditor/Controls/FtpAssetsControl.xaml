@@ -61,9 +61,11 @@
                       SelectionMode="Single" SelectionUnit="FullRow" Background="WhiteSmoke" RowBackground="WhiteSmoke"
                       IsReadOnly="True" ContextMenuOpening="FtpAssetsBoxContextOpening">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="*"/>
-                    <DataGridTextColumn Header="TitleID" Binding="{Binding TitleId}" Width="Auto"/>
+                    <DataGridTextColumn Header="Title" Binding="{Binding TitleName}" Width="*"/>
                     <DataGridTextColumn Header="DatabaseID" Binding="{Binding DatabaseId}" Width="Auto"/>
+                    <DataGridTextColumn Header="TitleID" Binding="{Binding TitleId}" Width="Auto"/>
+                    <DataGridTextColumn Header="MediaID" Binding="{Binding MediaId}" Width="Auto"/>
+                    <DataGridTextColumn Header="Disc#" Binding="{Binding DiscNum}" Width="Auto"/>
                 </DataGrid.Columns>
                 <DataGrid.ContextMenu>
                     <ContextMenu>
@@ -78,6 +80,12 @@
                         <MenuItem Header="Save Background" Click="SaveBackgroundClick"/>
                         <MenuItem Header="Save Icon/Banner" Click="SaveIconBannerClick"/>
                         <MenuItem Header="Save Screenshots" Click="SaveScreenshotsClick"/>
+                        <Separator/>
+                        <MenuItem Header="Remove All Assets" Click="RemoveFtpAssetsClick"/>
+                        <MenuItem Header="Remove Boxart" Click="RemoveBoxartClick"/>
+                        <MenuItem Header="Remove Background" Click="RemoveBackgroundClick"/>
+                        <MenuItem Header="Remove Icon/Banner" Click="RemoveIconBannerClick"/>
+                        <MenuItem Header="Remove Screenshots" Click="RemoveScreenshotsClick"/>
                     </ContextMenu>
                 </DataGrid.ContextMenu>
             </DataGrid>

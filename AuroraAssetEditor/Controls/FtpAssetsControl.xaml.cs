@@ -12,7 +12,6 @@ namespace AuroraAssetEditor.Controls {
     using System.Linq;
     using System.Net.NetworkInformation;
     using System.Net.Sockets;
-    using System.Text.RegularExpressions;
     using System.Threading;
     using System.Windows;
     using System.Windows.Controls;
@@ -23,7 +22,7 @@ namespace AuroraAssetEditor.Controls {
     ///     Interaction logic for FtpAssetsControl.xaml
     /// </summary>
     public partial class FtpAssetsControl {
-        private readonly ThreadSafeObservableCollection<FtpAsset> _assetsList = new ThreadSafeObservableCollection<FtpAsset>();
+        private readonly ThreadSafeObservableCollection<AuroraDbManager.ContentItem> _assetsList = new ThreadSafeObservableCollection<AuroraDbManager.ContentItem>();
         private readonly BackgroundControl _background;
         private readonly BoxartControl _boxart;
         private readonly IconBannerControl _iconBanner;
@@ -95,16 +94,8 @@ namespace AuroraAssetEditor.Controls {
                                  var path = Path.Combine(Path.GetTempPath(), "AuroraAssetEditor.db");
                                  if(!App.FtpOperations.DownloadContentDb(path))
                                      return;
-                                 App.TitleCache = AuroraDbManager.GetDbTitles(path);
-                                 if(!App.FtpOperations.NavigateToGameDataDir())
-                                     return;
-                                 foreach(var dir in App.FtpOperations.GetDirList()) {
-                                     path = dir;
-                                     Dispatcher.Invoke(new Action(() => Status.Text = string.Format("Processing {0}", path)));
-                                     var tmp = FtpAsset.BuildAsset(path);
-                                     if(tmp != null)
-                                         _assetsList.Add(tmp);
-                                 }
+                                 foreach(var title in AuroraDbManager.GetDbTitles(path))
+                                     _assetsList.Add(title);
                                  args.Result = true;
                              }
                              catch(Exception ex) {
@@ -126,8 +117,8 @@ namespace AuroraAssetEditor.Controls {
 
         private void ProcessAsset(Task task, bool shouldHideWhenDone = true) {
             _isError = false;
-            FtpAsset asset = null;
-            Dispatcher.InvokeIfRequired(() => asset = FtpAssetsBox.SelectedItem as FtpAsset, DispatcherPriority.Normal);
+            AuroraDbManager.ContentItem asset = null;
+            Dispatcher.InvokeIfRequired(() => asset = FtpAssetsBox.SelectedItem as AuroraDbManager.ContentItem, DispatcherPriority.Normal);
             if(asset == null)
                 return;
             var bw = new BackgroundWorker();
@@ -329,42 +320,37 @@ namespace AuroraAssetEditor.Controls {
 
         private void OnDrop(object sender, DragEventArgs e) { _main.DragDrop(this, e); }
 
-        internal class FtpAsset {
-            public string TitleId { get; private set; }
+        private void FtpAssetsBoxContextOpening(object sender, ContextMenuEventArgs e) {
+            if(FtpAssetsBox.SelectedItem == null)
+                e.Handled = true;
+        }
 
-            public string DatabaseId { get; private set; }
+        private void RemoveFtpAssetsClick(object sender, RoutedEventArgs e) {
+            _boxart.Reset();
+            _iconBanner.Reset();
+            _background.Reset();
+            _screenshots.Reset();
+            SaveFtpAssetsClick(sender, e);
+        }
 
-            public string Path { get { return string.Format("{0}_{1}", TitleId, DatabaseId); } }
+        private void RemoveBoxartClick(object sender, RoutedEventArgs e) {
+            _boxart.Reset();
+            SaveBoxartClick(sender, e);
+        }
 
-            public string Title { get; private set; }
+        private void RemoveBackgroundClick(object sender, RoutedEventArgs e) {
+            _background.Reset();
+            SaveBackgroundClick(sender, e);
+        }
 
-            public static FtpAsset BuildAsset(string path) {
-                if(!Regex.IsMatch(path, "^[0-9A-Fa-f]{8}_[0-9A-Fa-f]{8}$"))
-                    return null;
-                var ret = new FtpAsset {
-                                           TitleId = path.Substring(0, 8),
-                                           DatabaseId = path.Substring(9)
-                                       };
-                var unity = App.TitleCache.Where(title => title.TitleId.Equals(ret.TitleId, StringComparison.CurrentCultureIgnoreCase)).ToArray();
-                ret.Title = unity.Length > 0 ? unity[0].Title : "N/A";
-                return ret;
-            }
+        private void RemoveIconBannerClick(object sender, RoutedEventArgs e) {
+            _iconBanner.Reset();
+            SaveIconBannerClick(sender, e);
+        }
 
-            public void SaveAsBoxart(byte[] data) { App.FtpOperations.SendAssetData(string.Format("GC{0}.asset", TitleId), Path, data); }
-
-            public void SaveAsBackground(byte[] data) { App.FtpOperations.SendAssetData(string.Format("BK{0}.asset", TitleId), Path, data); }
-
-            public void SaveAsIconBanner(byte[] data) { App.FtpOperations.SendAssetData(string.Format("GL{0}.asset", TitleId), Path, data); }
-
-            public void SaveAsScreenshots(byte[] data) { App.FtpOperations.SendAssetData(string.Format("SS{0}.asset", TitleId), Path, data); }
-
-            public byte[] GetBoxart() { return App.FtpOperations.GetAssetData(string.Format("GC{0}.asset", TitleId), Path); }
-
-            public byte[] GetBackground() { return App.FtpOperations.GetAssetData(string.Format("BK{0}.asset", TitleId), Path); }
-
-            public byte[] GetIconBanner() { return App.FtpOperations.GetAssetData(string.Format("GL{0}.asset", TitleId), Path); }
-
-            public byte[] GetScreenshots() { return App.FtpOperations.GetAssetData(string.Format("SS{0}.asset", TitleId), Path); }
+        private void RemoveScreenshotsClick(object sender, RoutedEventArgs e) {
+            _screenshots.Reset();
+            SaveScreenshotsClick(sender, e);
         }
 
         private enum Task {
@@ -376,11 +362,6 @@ namespace AuroraAssetEditor.Controls {
             SetBackground,
             SetIconBanner,
             SetScreenshots,
-        }
-
-        private void FtpAssetsBoxContextOpening(object sender, ContextMenuEventArgs e) {
-            if(FtpAssetsBox.SelectedItem == null)
-                e.Handled = true;
         }
     }
 }

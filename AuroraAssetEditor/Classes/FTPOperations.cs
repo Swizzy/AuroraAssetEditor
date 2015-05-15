@@ -155,10 +155,10 @@ namespace AuroraAssetEditor.Classes {
 
         public byte[] GetAssetData(string file, string assetDir) {
             if(!NavigateToAssetDir(assetDir))
-                return new byte[0];
+                return null;
             var size = (from item in _client.GetListing() where item.Name.Equals(file, StringComparison.CurrentCultureIgnoreCase) select (int)item.Size).FirstOrDefault();
             if(size <= 0)
-                return new byte[0];
+                return null;
             var data = new byte[size];
             var offset = 0;
             using(var stream = _client.OpenRead(file)) {
