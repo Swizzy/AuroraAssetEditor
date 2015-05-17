@@ -25,7 +25,6 @@ namespace AuroraAssetEditor {
             Icon.ExtractAssociatedIcon(Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(typeof(App)).Location), Path.GetFileName(Assembly.GetAssembly(typeof(App)).Location)));
 
         internal static readonly ImageSource WpfIcon = Imaging.CreateBitmapSourceFromHIcon(Icon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
-        internal static XboxUnity.XboxUnityTitle[] TitleCache;
 
         private void AppStart(object sender, StartupEventArgs e) { new MainWindow(e.Args).Show(); }
     }

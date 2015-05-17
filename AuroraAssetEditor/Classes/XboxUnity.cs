@@ -17,16 +17,8 @@ namespace AuroraAssetEditor.Classes {
 
     internal static class XboxUnity {
         private static readonly DataContractJsonSerializer Serializer = new DataContractJsonSerializer(typeof(UnityResponse[]));
-        private static readonly DataContractJsonSerializer CacheSerializer = new DataContractJsonSerializer(typeof(XboxUnityTitle[]));
 
         private static string GetUnityUrl(string searchTerm) { return string.Format("http://xboxunity.net/api/Covers/{0}", HttpUtility.UrlEncode(searchTerm)); }
-
-        public static XboxUnityAsset[] GetUnityCoverInfo(int titleId) {
-            using(var wc = new WebClient()) {
-                var stream = wc.OpenRead(GetUnityUrl(titleId.ToString("X8")));
-                return stream != null ? ((UnityResponse[])Serializer.ReadObject(stream)).Select(t => new XboxUnityAsset(t)).ToArray() : new XboxUnityAsset[0];
-            }
-        }
 
         public static XboxUnityAsset[] GetUnityCoverInfo(string searchTerm) {
             using(var wc = new WebClient()) {
@@ -101,19 +93,6 @@ namespace AuroraAssetEditor.Classes {
             public override string ToString() {
                 return string.Format(_unityResponse.Official ? "Official cover for {0} Rating: {1}" : "Cover for {0} Rating: {1}", _unityResponse.Name, _unityResponse.Rating ?? "N/A");
             }
-        }
-
-        [DataContract] public class XboxUnityTitle {
-            public XboxUnityTitle(int titleId, string titleName) {
-                Title = titleName;
-                TitleId = titleId.ToString("X08");
-            }
-
-            [DataMember(Name = "titleid")] public string TitleId { get; set; }
-
-            [DataMember(Name = "title")] public string Title { get; set; }
-
-            public override string ToString() { return string.Format("{0}: {1}", TitleId, Title); }
         }
     }
 }
