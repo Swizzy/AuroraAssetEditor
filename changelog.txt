@@ -1,3 +1,8 @@
+v1.2
+ ~ Fixed a bug with not overwriting the settings JSON file properly with FTP
+ ~ Fixed a bug with not saving settings without first doing a connection test
+ ~ Fixed a bug causing issues after ~ 10 minutes of doing nothing
+
 v1.1
  + Added support for reading FSD Assets file(s) and converting to Aurora assets - Thanks for updating the dll to read dds MaesterRowen
          also thanks for helping me with the structure of these files, without you this app wouldn't have existed!
