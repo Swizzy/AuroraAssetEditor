@@ -109,6 +109,8 @@ namespace AuroraAssetEditor.Classes {
             var path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             path = !string.IsNullOrWhiteSpace(path) ? Path.Combine(path, "AuroraAssetEditor", "ftp.json") : "ftp.json";
             path = Path.GetFullPath(path);
+            if (File.Exists(path))
+                File.Delete(path);
             var dir = Path.GetDirectoryName(path);
             if(string.IsNullOrWhiteSpace(dir))
                 return;

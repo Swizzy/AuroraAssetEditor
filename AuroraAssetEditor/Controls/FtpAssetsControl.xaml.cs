@@ -82,7 +82,7 @@ namespace AuroraAssetEditor.Controls {
             bw.RunWorkerAsync();
         }
 
-        private void SaveSettingsClick(object sender, RoutedEventArgs e) { App.FtpOperations.SaveSettings(); }
+        private void SaveSettingsClick(object sender, RoutedEventArgs e) { App.FtpOperations.SaveSettings(IpBox.Text, UserBox.Text, PassBox.Text, PortBox.Text); }
 
         private void GetAssetsClick(object sender, RoutedEventArgs e) {
             _assetsList.Clear();
