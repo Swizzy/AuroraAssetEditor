@@ -85,7 +85,8 @@ namespace AuroraAssetEditor.Classes {
         private bool MakeConnection() {
             _client = new FtpClient {
                                         Credentials = new NetworkCredential(_settings.Username, _settings.Password),
-                                        Host = _settings.IpAddress
+                                        Host = _settings.IpAddress,
+                                        SocketKeepAlive = true
                                     };
             int port;
             if(!int.TryParse(_settings.Port, out port)) {
