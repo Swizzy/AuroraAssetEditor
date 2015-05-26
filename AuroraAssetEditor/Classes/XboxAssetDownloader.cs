@@ -9,15 +9,19 @@ namespace AuroraAssetEditor.Classes {
     using System;
     using System.Collections.Generic;
     using System.Drawing;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Net;
+    using System.Runtime.Serialization;
+    using System.Runtime.Serialization.Json;
     using System.Text;
     using System.Web;
     using System.Xml;
 
     internal class XboxAssetDownloader {
         public static EventHandler<StatusArgs> StatusChanged;
+        private readonly DataContractJsonSerializer _serializer = new DataContractJsonSerializer(typeof(XboxKeywordResponse));
 
         internal static void SendStatusChanged(string msg) {
             var handler = StatusChanged;
@@ -25,7 +29,24 @@ namespace AuroraAssetEditor.Classes {
                 handler.Invoke(null, new StatusArgs(msg));
         }
 
-        public XboxTitleInfo GetTitleInfo(uint titleId, XboxLocale locale) { return XboxTitleInfo.FromTitleId(titleId, locale); }
+        public XboxTitleInfo[] GetTitleInfo(uint titleId, XboxLocale locale) {
+            return new[] {
+                             XboxTitleInfo.FromTitleId(titleId, locale)
+                         };
+        }
+
+        public XboxTitleInfo[] GetTitleInfo(string keywords, XboxLocale locale) {
+            var url = string.Format("http://marketplace.xbox.com/{0}/SiteSearch/xbox/?query={1}&PageSize=5", locale.Locale, HttpUtility.UrlEncode(keywords));
+            var wc = new WebClient();
+            var ret = new List<XboxTitleInfo>();
+            using(var stream = wc.OpenRead(url)) {
+                if(stream == null)
+                    return ret.ToArray();
+                var res = (XboxKeywordResponse)_serializer.ReadObject(stream);
+                ret.AddRange(from entry in res.Entries where entry.DetailsUrl != null let tid = entry.DetailsUrl.IndexOf("d802", StringComparison.Ordinal) where tid > 0 && entry.DetailsUrl.Length >= tid + 12 select uint.Parse(entry.DetailsUrl.Substring(tid + 4, 8), NumberStyles.HexNumber) into titleId select XboxTitleInfo.FromTitleId(titleId, locale));
+            }
+            return ret.ToArray();
+        }
 
         public static XboxLocale[] GetLocales() {
             var ret = new List<XboxLocale>();
@@ -221,5 +242,14 @@ namespace AuroraAssetEditor.Classes {
         }
 
         public override string ToString() { return string.Format("{0} [ {1} ]", _name, Locale); }
+    }
+
+    [DataContract] public class XboxKeywordResponse {
+        [DataMember(Name = "entries")] public Entry[] Entries { get; set; }
+
+        [DataContract] public class Entry {
+            [DataMember(Name = "detailsUrl")] public string DetailsUrl { get; set; }
+            //There is more data sent both here and ^, but we only need this, so i only added that...
+        }
     }
 }

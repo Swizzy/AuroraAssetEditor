@@ -7,6 +7,7 @@
 
 namespace AuroraAssetEditor.Controls {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel;
     using System.Drawing.Imaging;
     using System.Globalization;
@@ -37,10 +38,11 @@ namespace AuroraAssetEditor.Controls {
         private readonly XboxAssetDownloader _xboxAssetDownloader = new XboxAssetDownloader();
         private readonly BackgroundWorker _xboxWorker = new BackgroundWorker();
         private Image _img;
+        private string _keywords;
         private XboxLocale[] _locales;
         private uint _titleId;
         private XboxUnity.XboxUnityAsset[] _unityResult;
-        private XboxTitleInfo _xboxResult;
+        private XboxTitleInfo[] _xboxResult;
 
         public OnlineAssetsControl(MainWindow main, BoxartControl boxart, BackgroundControl background, IconBannerControl iconBanner, ScreenshotsControl screenshots) {
             InitializeComponent();
@@ -103,7 +105,9 @@ namespace AuroraAssetEditor.Controls {
 
             _xboxWorker.DoWork += (sender, args) => {
                                       try {
-                                          _xboxResult = _xboxAssetDownloader.GetTitleInfo(_titleId, args.Argument as XboxLocale);
+                                          _xboxResult = _keywords == null
+                                                            ? _xboxAssetDownloader.GetTitleInfo(_titleId, args.Argument as XboxLocale)
+                                                            : _xboxAssetDownloader.GetTitleInfo(_keywords, args.Argument as XboxLocale);
                                           Dispatcher.Invoke(new Action(() => StatusMessage.Text = "Finished downloading asset information..."));
                                           args.Result = true;
                                       }
@@ -115,8 +119,11 @@ namespace AuroraAssetEditor.Controls {
                                   };
             _xboxWorker.RunWorkerCompleted += (sender, args) => {
                                                   if((bool)args.Result) {
-                                                      ResultBox.ItemsSource = _xboxResult.AssetsInfo;
-                                                      SearchResultCount.Text = _xboxResult.AssetsInfo.Length.ToString(CultureInfo.InvariantCulture);
+                                                      var disp = new List<XboxTitleInfo.XboxAssetInfo>();
+                                                      foreach(var info in _xboxResult)
+                                                          disp.AddRange(info.AssetsInfo);
+                                                      ResultBox.ItemsSource = disp;
+                                                      SearchResultCount.Text = disp.Count.ToString(CultureInfo.InvariantCulture);
                                                   }
                                                   else {
                                                       ResultBox.ItemsSource = null;
@@ -214,7 +221,7 @@ namespace AuroraAssetEditor.Controls {
 
         private void SourceBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             LocaleGrid.Visibility = SourceBox.SelectedIndex == 1 ? Visibility.Visible : Visibility.Hidden;
-            KeywordsButton.IsEnabled = SourceBox.SelectedIndex != 1;
+            //KeywordsButton.IsEnabled = SourceBox.SelectedIndex != 1;
         }
 
         private void ByTitleIdClick(object sender, RoutedEventArgs e) {
@@ -226,6 +233,7 @@ namespace AuroraAssetEditor.Controls {
             PreviewImg.Source = null;
             PreviewImg.ContextMenu.ItemsSource = null;
             _main.EditMenu.ItemsSource = null;
+            _keywords = null;
             if(SourceBox.SelectedIndex == 0) {
                 StatusMessage.Text = "Downloading asset information...";
                 _unityWorker.RunWorkerAsync(_titleId.ToString("X08"));
@@ -235,7 +243,7 @@ namespace AuroraAssetEditor.Controls {
         }
 
         private void ByKeywordsClick(object sender, RoutedEventArgs e) {
-            if(_unityWorker.IsBusy) {
+            if(_unityWorker.IsBusy || _xboxWorker.IsBusy) {
                 MessageBox.Show("Please wait for previous operation to complete!");
                 return;
             }
@@ -243,7 +251,12 @@ namespace AuroraAssetEditor.Controls {
             PreviewImg.ContextMenu.ItemsSource = null;
             _main.EditMenu.ItemsSource = null;
             StatusMessage.Text = "Downloading asset information...";
-            _unityWorker.RunWorkerAsync(KeywordsBox.Text);
+            if(SourceBox.SelectedIndex == 0)
+                _unityWorker.RunWorkerAsync(KeywordsBox.Text);
+            else {
+                _keywords = KeywordsBox.Text;
+                _xboxWorker.RunWorkerAsync(LocaleBox.SelectedItem);
+            }
         }
 
         private void SetPreview(Image img, int maxWidth, int maxHeight) {
