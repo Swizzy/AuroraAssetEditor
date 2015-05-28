@@ -931,6 +931,13 @@
             <param name="stmt">The SQLiteStatement to step through</param>
             <returns>True if a row was returned, False if not.</returns>
         </member>
+        <member name="M:System.Data.SQLite.SQLiteBase.IsReadOnly(System.Data.SQLite.SQLiteStatement)">
+            <summary>
+            Returns non-zero if the specified statement is read-only in nature.
+            </summary>
+            <param name="stmt">The statement to check.</param>
+            <returns>True if the outer query is read-only.</returns>
+        </member>
         <member name="M:System.Data.SQLite.SQLiteBase.Reset(System.Data.SQLite.SQLiteStatement)">
             <summary>
             Resets a prepared statement so it can be executed again.  If the error returned is SQLITE_SCHEMA,
@@ -1153,15 +1160,6 @@
             <param name="rc">The SQLite return code.</param>
             <returns>The error message or null if it cannot be found.</returns>
         </member>
-        <member name="M:System.Data.SQLite.SQLiteBase.GetErrorString(System.Data.SQLite.SQLiteErrorCode)">
-            <summary>
-            Returns the error message for the specified SQLite return code using
-            the sqlite3_errstr() function, falling back to the internal lookup
-            table if necessary.
-            </summary>
-            <param name="rc">The SQLite return code.</param>
-            <returns>The error message or null if it cannot be found.</returns>
-        </member>
         <member name="P:System.Data.SQLite.SQLiteBase.Version">
             <summary>
             Returns a string representing the active version of SQLite
@@ -1342,6 +1340,34 @@
             <returns>
             Non-zero if the associated native connection handle is open.
             </returns>
+        </member>
+        <member name="F:System.Data.SQLite.SQLite3.have_errstr">
+            <summary>
+            Has the sqlite3_errstr() core library API been checked for yet?
+            If so, is it present?
+            </summary>
+        </member>
+        <member name="M:System.Data.SQLite.SQLite3.GetErrorString(System.Data.SQLite.SQLiteErrorCode)">
+            <summary>
+            Returns the error message for the specified SQLite return code using
+            the sqlite3_errstr() function, falling back to the internal lookup
+            table if necessary.
+            </summary>
+            <param name="rc">The SQLite return code.</param>
+            <returns>The error message or null if it cannot be found.</returns>
+        </member>
+        <member name="F:System.Data.SQLite.SQLite3.have_stmt_readonly">
+            <summary>
+            Has the sqlite3_stmt_readonly() core library API been checked for yet?
+            If so, is it present?
+            </summary>
+        </member>
+        <member name="M:System.Data.SQLite.SQLite3.IsReadOnly(System.Data.SQLite.SQLiteStatement)">
+            <summary>
+            Returns non-zero if the specified statement is read-only in nature.
+            </summary>
+            <param name="stmt">The statement to check.</param>
+            <returns>True if the outer query is read-only.</returns>
         </member>
         <member name="F:System.Data.SQLite.SQLite3.forceLogPrepare">
             <summary>
@@ -3640,8 +3666,42 @@
             <summary>
             Retrieves schema information using the specified constraint(s) for the specified collection
             </summary>
-            <param name="collectionName">The collection to retrieve</param>
-            <param name="restrictionValues">The restrictions to impose</param>
+            <param name="collectionName">The collection to retrieve.</param>
+            <param name="restrictionValues">
+            The restrictions to impose.  Typically, this may include:
+            <list type="table">
+            <listheader>
+            <term>restrictionValues element index</term>
+            <term>usage</term>
+            </listheader>
+            <item>
+            <description>0</description>
+            <description>The database (or catalog) name, if applicable.</description>
+            </item>
+            <item>
+            <description>1</description>
+            <description>The schema name.  This is not used by this provider.</description>
+            </item>
+            <item>
+            <description>2</description>
+            <description>The table name, if applicable.</description>
+            </item>
+            <item>
+            <description>3</description>
+            <description>
+            Depends on <paramref name="collectionName" />.
+            When "IndexColumns", it is the index name; otherwise, it is the column name.
+            </description>
+            </item>
+            <item>
+            <description>4</description>
+            <description>
+            Depends on <paramref name="collectionName" />.
+            When "IndexColumns", it is the column name; otherwise, it is not used.
+            </description>
+            </item>
+            </list>
+            </param>
             <returns>A DataTable of the specified collection</returns>
         </member>
         <member name="M:System.Data.SQLite.SQLiteConnection.Schema_MetaDataCollections">
@@ -4120,6 +4180,12 @@
             identifier for the source checkout used to build the managed
             components currently executing.  If the necessary information
             cannot be obtained for any reason, a null value may be returned.
+            </summary>
+        </member>
+        <member name="P:System.Data.SQLite.SQLiteConnection.DefaultFlags">
+            <summary>
+            The default connection flags to be used for all opened connections
+            when they are not present in the connection string.
             </summary>
         </member>
         <member name="P:System.Data.SQLite.SQLiteConnection.SharedFlags">
@@ -6001,7 +6067,12 @@
         </member>
         <member name="P:System.Data.SQLite.SQLiteDataReader.RecordsAffected">
             <summary>
-            Retrieve the count of records affected by an update/insert command.  Only valid once the data reader is closed!
+            Returns the number of rows affected by the statement being executed.
+            The value returned may not be accurate for DDL statements.  Also, it
+            will be -1 for any statement that does not modify the database (e.g.
+            SELECT).  If an otherwise read-only statement modifies the database
+            indirectly (e.g. via a virtual table or user-defined function), the
+            value returned is undefined.
             </summary>
         </member>
         <member name="P:System.Data.SQLite.SQLiteDataReader.Item(System.String)">
@@ -7120,6 +7191,16 @@
             SQLite implementation of DbParameter.
             </summary>
         </member>
+        <member name="F:System.Data.SQLite.SQLiteParameter.UnknownDbType">
+            <summary>
+            This value represents an "unknown" <see cref="P:System.Data.SQLite.SQLiteParameter.DbType"/>.
+            </summary>
+        </member>
+        <member name="F:System.Data.SQLite.SQLiteParameter._command">
+            <summary>
+            The command associated with this parameter.
+            </summary>
+        </member>
         <member name="F:System.Data.SQLite.SQLiteParameter._dbType">
             <summary>
             The data type of the parameter
@@ -7149,6 +7230,14 @@
             <summary>
             The data size, unused by SQLite
             </summary>
+        </member>
+        <member name="M:System.Data.SQLite.SQLiteParameter.#ctor(System.Data.IDbCommand)">
+            <summary>
+            Constructor used when creating for use with a specific command.
+            </summary>
+            <param name="command">
+            The command associated with this parameter.
+            </param>
         </member>
         <member name="M:System.Data.SQLite.SQLiteParameter.#ctor">
             <summary>
@@ -7311,6 +7400,11 @@
             Clones a parameter
             </summary>
             <returns>A new, unassociated SQLiteParameter</returns>
+        </member>
+        <member name="P:System.Data.SQLite.SQLiteParameter.Command">
+            <summary>
+            The command associated with this parameter.
+            </summary>
         </member>
         <member name="P:System.Data.SQLite.SQLiteParameter.IsNullable">
             <summary>
@@ -7654,13 +7748,17 @@
             Disposes and finalizes the statement
             </summary>
         </member>
-        <member name="M:System.Data.SQLite.SQLiteStatement.TryGetChanges(System.Int32@)">
+        <member name="M:System.Data.SQLite.SQLiteStatement.TryGetChanges(System.Int32@,System.Boolean@)">
             <summary>
             If the underlying database connection is open, fetches the number of changed rows
             resulting from the most recent query; otherwise, does nothing.
             </summary>
             <param name="changes">
             The number of changes when true is returned.
+            Undefined if false is returned.
+            </param>
+            <param name="readOnly">
+            The read-only flag when true is returned.
             Undefined if false is returned.
             </param>
             <returns>Non-zero if the number of changed rows was fetched.</returns>
