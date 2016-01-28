@@ -1,7 +1,7 @@
-﻿// 
+﻿//
 // 	App.xaml.cs
 // 	AuroraAssetEditor
-// 
+//
 // 	Created by Swizzy on 08/05/2015
 // 	Copyright (c) 2015 Swizzy. All rights reserved.
 
@@ -13,7 +13,7 @@ namespace AuroraAssetEditor {
     using System.Windows.Interop;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
-    using AuroraAssetEditor.Classes;
+    using Classes;
 
     /// <summary>
     ///     Interaction logic for App.xaml

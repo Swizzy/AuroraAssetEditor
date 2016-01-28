@@ -1,7 +1,7 @@
-﻿// 
+﻿//
 // 	OnlineAssetsControl.xaml.cs
 // 	AuroraAssetEditor
-// 
+//
 // 	Created by Swizzy on 10/05/2015
 // 	Copyright (c) 2015 Swizzy. All rights reserved.
 
@@ -17,7 +17,7 @@ namespace AuroraAssetEditor.Controls {
     using System.Windows.Controls;
     using System.Windows.Input;
     using System.Windows.Media.Imaging;
-    using AuroraAssetEditor.Classes;
+    using Classes;
     using Image = System.Drawing.Image;
 
     /// <summary>

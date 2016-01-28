@@ -1,7 +1,7 @@
-﻿// 
+﻿//
 // 	FtpAssetsControl.xaml.cs
 // 	AuroraAssetEditor
-// 
+//
 // 	Created by Swizzy on 13/05/2015
 // 	Copyright (c) 2015 Swizzy. All rights reserved.
 
@@ -16,7 +16,7 @@ namespace AuroraAssetEditor.Controls {
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Threading;
-    using AuroraAssetEditor.Classes;
+    using Classes;
 
     /// <summary>
     ///     Interaction logic for FtpAssetsControl.xaml

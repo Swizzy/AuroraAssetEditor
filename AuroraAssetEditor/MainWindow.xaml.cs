@@ -1,7 +1,7 @@
-﻿// 
+﻿//
 // 	MainWindow.xaml.cs
 // 	AuroraAssetEditor
-// 
+//
 // 	Created by Swizzy on 08/05/2015
 // 	Copyright (c) 2015 Swizzy. All rights reserved.
 
@@ -16,9 +16,8 @@ namespace AuroraAssetEditor {
     using System.Reflection;
     using System.Windows;
     using System.Windows.Controls;
-    using System.Windows.Input;
-    using AuroraAssetEditor.Classes;
-    using AuroraAssetEditor.Controls;
+    using Classes;
+    using Controls;
     using Microsoft.Win32;
     using Ookii.Dialogs.Wpf;
     using Image = System.Drawing.Image;
@@ -35,18 +34,16 @@ namespace AuroraAssetEditor {
             "All Supported Images|*.png;*.bmp;*.jpg;*.jpeg;*.gif;*.tif;*.tiff;|BMP (*.bmp)|*.bmp|JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|GIF (*.gif)|*.gif|TIFF (*.tif;*.tiff)|*.tiff;*.tif|PNG (*.png)|*.png|All Files|*";
 
         private readonly BackgroundControl _background;
-        private readonly UIElement[] _backgroundMenu;
+        private readonly MenuItem[] _backgroundMenu;
         private readonly BoxartControl _boxart;
-        private readonly UIElement[] _boxartMenu;
+        private readonly MenuItem[] _boxartMenu;
         private readonly IconBannerControl _iconBanner;
         private readonly UIElement[] _iconBannerMenu;
         private readonly ScreenshotsControl _screenshots;
-        private readonly UIElement[] _screenshotsMenu;
+        private readonly MenuItem[] _screenshotsMenu;
 
         public MainWindow(IEnumerable<string> args) {
             InitializeComponent();
-            foreach(var mitem in SettingsMenu.Items)
-                ((MenuItem)mitem).IsEnabled = !((MenuItem)mitem).IsCheckable;
             var ver = Assembly.GetAssembly(typeof(MainWindow)).GetName().Version;
             Title = string.Format(Title, ver.Major, ver.Minor);
             Icon = App.WpfIcon;
@@ -63,8 +60,8 @@ namespace AuroraAssetEditor {
                                                      Header = "Select new Cover"
                                                  }
                                 };
-            ((MenuItem)_boxartMenu[0]).Click += _boxart.SaveImageToFileOnClick;
-            ((MenuItem)_boxartMenu[1]).Click += _boxart.SelectNewCover;
+            _boxartMenu[0].Click += _boxart.SaveImageToFileOnClick;
+            _boxartMenu[1].Click += _boxart.SelectNewCover;
 
             #endregion
 
@@ -80,8 +77,8 @@ namespace AuroraAssetEditor {
                                                          Header = "Select new Background"
                                                      }
                                     };
-            ((MenuItem)_backgroundMenu[0]).Click += _background.SaveImageToFileOnClick;
-            ((MenuItem)_backgroundMenu[1]).Click += _background.SelectNewBackground;
+            _backgroundMenu[0].Click += _background.SaveImageToFileOnClick;
+            _backgroundMenu[1].Click += _background.SelectNewBackground;
 
             #endregion
 
@@ -129,10 +126,10 @@ namespace AuroraAssetEditor {
                                                           Header = "Remove screenshot"
                                                       }
                                      };
-            ((MenuItem)_screenshotsMenu[0]).Click += _screenshots.SaveImageToFileOnClick;
-            ((MenuItem)_screenshotsMenu[1]).Click += _screenshots.SelectNewScreenshot;
-            ((MenuItem)_screenshotsMenu[2]).Click += _screenshots.AddNewScreenshot;
-            ((MenuItem)_screenshotsMenu[3]).Click += _screenshots.RemoveScreenshot;
+            _screenshotsMenu[0].Click += _screenshots.SaveImageToFileOnClick;
+            _screenshotsMenu[1].Click += _screenshots.SelectNewScreenshot;
+            _screenshotsMenu[2].Click += _screenshots.AddNewScreenshot;
+            _screenshotsMenu[3].Click += _screenshots.RemoveScreenshot;
 
             #endregion
 
@@ -505,13 +502,6 @@ namespace AuroraAssetEditor {
             }
         }
 
-        private void AdvancedModeCanExecute(object sender, CanExecuteRoutedEventArgs e) { e.CanExecute = e.Handled = true; }
-
-        private void AdvancedModeOnExecuted(object sender, ExecutedRoutedEventArgs e) {
-            foreach(var mitem in SettingsMenu.Items)
-                ((MenuItem)mitem).IsEnabled = true;
-        }
-
         private void SaveAllAssetsOnClick(object sender, RoutedEventArgs e) {
             var ipd = new InputDialog(this, "Please specify TitleID:");
             if(ipd.ShowDialog() != true || string.IsNullOrWhiteSpace(ipd.Value))
@@ -580,13 +570,5 @@ namespace AuroraAssetEditor {
         }
 
         private void FileOpening(object sender, ContextMenuEventArgs e) { FtpUpload.IsEnabled = App.FtpOperations.HaveSettings; }
-    }
-
-    public static class CustomCommands {
-        public static readonly RoutedUICommand AdvancedMode = new RoutedUICommand("AdvancedMode", "AdvancedMode", typeof(CustomCommands), new InputGestureCollection {
-                                                                                                                                                                         new KeyGesture(Key.F12,
-                                                                                                                                                                                        ModifierKeys
-                                                                                                                                                                                            .Control)
-                                                                                                                                                                     });
     }
 }

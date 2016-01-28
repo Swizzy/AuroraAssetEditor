@@ -1,7 +1,7 @@
-﻿// 
+﻿//
 // 	BoxartControl.xaml.cs
 // 	AuroraAssetEditor
-// 
+//
 // 	Created by Swizzy on 10/05/2015
 // 	Copyright (c) 2015 Swizzy. All rights reserved.
 
@@ -13,7 +13,7 @@ namespace AuroraAssetEditor.Controls {
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Media.Imaging;
-    using AuroraAssetEditor.Classes;
+    using Classes;
     using Microsoft.Win32;
     using Image = System.Drawing.Image;
     using Size = System.Drawing.Size;

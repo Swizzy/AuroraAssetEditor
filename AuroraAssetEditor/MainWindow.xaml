@@ -1,63 +1,90 @@
 ﻿<Window x:Class="AuroraAssetEditor.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Aurora Asset Editor v{0}.{1} by Swizzy thanks to MaesterRowen" MinHeight="350" MinWidth="550"
-        xmlns:self="clr-namespace:AuroraAssetEditor"
         xmlns:controls="clr-namespace:AuroraAssetEditor.Controls"
-        Width="550" Height="350" AllowDrop="True" PreviewDragEnter="OnDragEnter">
-    <Window.CommandBindings>
-        <CommandBinding Command="self:CustomCommands.AdvancedMode" CanExecute="AdvancedModeCanExecute"
-                        Executed="AdvancedModeOnExecuted" />
-    </Window.CommandBindings>
+        Title="Aurora Asset Editor v{0}.{1} by Swizzy thanks to MaesterRowen"
+        Width="550"
+        Height="350"
+        MinWidth="550"
+        MinHeight="350"
+        AllowDrop="True"
+        PreviewDragEnter="OnDragEnter">
     <Grid>
         <Grid ZIndex="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Menu Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Background="White">
-                <MenuItem Header="File" ContextMenuOpening="FileOpening">
-                    <MenuItem Header="Create New Asset File" Click="CreateNewOnClick" />
-                    <MenuItem Header="Load Asset File" Click="LoadAssetOnClick" />
-                    <MenuItem Header="Save All Assets" Click="SaveAllAssetsOnClick" />
-                    <MenuItem Header="Save All Assets to FTP" Click="SaveAllAssetsFtpOnClick" x:Name="FtpUpload" />
+            <Menu Grid.Row="0"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Top"
+                  Background="White">
+                <MenuItem ContextMenuOpening="FileOpening" Header="File">
+                    <MenuItem Click="CreateNewOnClick" Header="Create New Asset File" />
+                    <MenuItem Click="LoadAssetOnClick" Header="Load Asset File" />
+                    <MenuItem Click="SaveAllAssetsOnClick" Header="Save All Assets" />
+                    <MenuItem x:Name="FtpUpload"
+                              Click="SaveAllAssetsFtpOnClick"
+                              Header="Save All Assets to FTP" />
                     <Separator />
-                    <MenuItem Header="Save Boxart/Cover Asset" Click="SaveBoxartOnClick" />
-                    <MenuItem Header="Save Background Asset" Click="SaveBackgroundOnClick" />
-                    <MenuItem Header="Save Screenshots Asset" Click="SaveScreenshotsOnClick" />
-                    <MenuItem Header="Save Icon/Banner Asset" Click="SaveIconBannerOnClick" />
+                    <MenuItem Click="SaveBoxartOnClick" Header="Save Boxart/Cover Asset" />
+                    <MenuItem Click="SaveBackgroundOnClick" Header="Save Background Asset" />
+                    <MenuItem Click="SaveScreenshotsOnClick" Header="Save Screenshots Asset" />
+                    <MenuItem Click="SaveIconBannerOnClick" Header="Save Icon/Banner Asset" />
                     <Separator />
-                    <MenuItem Header="Exit" Click="ExitOnClick" />
+                    <MenuItem Click="ExitOnClick" Header="Exit" />
                 </MenuItem>
-                <MenuItem Header="Settings" x:Name="SettingsMenu">
-                    <MenuItem x:Name="AutoResizeImages" Header="Auto Resize Images" IsCheckable="True" IsChecked="True" />
-                    <MenuItem x:Name="UseCompression" Header="Use Compression" IsCheckable="True" IsChecked="True" />
+                <MenuItem x:Name="SettingsMenu" Header="Settings">
+                    <MenuItem x:Name="AutoResizeImages"
+                              Header="Auto Resize Images"
+                              IsCheckable="True"
+                              IsChecked="True" />
+                    <MenuItem x:Name="UseCompression"
+                              Header="Use Compression"
+                              IsCheckable="True"
+                              IsChecked="True" />
                 </MenuItem>
-                <MenuItem Header="Edit" x:Name="EditMenu" SubmenuOpened="EditMenuOpened" />
+                <MenuItem x:Name="EditMenu"
+                          Header="Edit"
+                          SubmenuOpened="EditMenuOpened" />
             </Menu>
-            <TabControl Grid.Row="1" HorizontalAlignment="Stretch" Margin="10" VerticalAlignment="Stretch"
+            <TabControl Grid.Row="1"
+                        Margin="10"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
                         SelectionChanged="TabChanged">
-                <TabItem Header="Boxart/Cover" x:Name="BoxartTab" />
-                <TabItem Header="Background" x:Name="BackgroundTab" />
-                <TabItem Header="Icon/Banner" x:Name="IconBannerTab" />
-                <TabItem Header="Screenshots" x:Name="ScreenshotsTab" />
-                <TabItem Header="Online Assets" x:Name="OnlineAssetsTab" x:FieldModifier="private" />
-                <TabItem Header="FTP Assets" x:Name="FtpAssetsTab" x:FieldModifier="private" />
+                <TabItem x:Name="BoxartTab" Header="Boxart/Cover" />
+                <TabItem x:Name="BackgroundTab" Header="Background" />
+                <TabItem x:Name="IconBannerTab" Header="Icon/Banner" />
+                <TabItem x:Name="ScreenshotsTab" Header="Screenshots" />
+                <TabItem x:Name="OnlineAssetsTab"
+                         Header="Online Assets"
+                         x:FieldModifier="private" />
+                <TabItem x:Name="FtpAssetsTab"
+                         Header="FTP Assets"
+                         x:FieldModifier="private" />
             </TabControl>
         </Grid>
-        <Grid x:Name="BusyIndicator" ZIndex="1" Visibility="Collapsed">
+        <Grid x:Name="BusyIndicator"
+              Visibility="Collapsed"
+              ZIndex="1">
             <Grid.Background>
-                <SolidColorBrush Color="DimGray" Opacity="0.7" />
+                <SolidColorBrush Opacity="0.7" Color="DimGray" />
             </Grid.Background>
-            <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Background="WhiteSmoke" MinWidth="100"
-                  MinHeight="100">
-                <Grid ZIndex="0" Opacity="0.2">
-                    <controls:CircularProgressBar
-                        Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Grid}}}" />
+            <Grid MinWidth="100"
+                  MinHeight="100"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  Background="WhiteSmoke">
+                <Grid Opacity="0.2" ZIndex="0">
+                    <controls:CircularProgressBar Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Grid}}}" />
                 </Grid>
                 <Grid ZIndex="1">
-                    <TextBlock Text="Please wait while processing your request..." VerticalAlignment="Center"
-                               HorizontalAlignment="Center" Margin="20" FontWeight="Bold" />
+                    <TextBlock Margin="20"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontWeight="Bold"
+                               Text="Please wait while processing your request..." />
                 </Grid>
             </Grid>
         </Grid>
