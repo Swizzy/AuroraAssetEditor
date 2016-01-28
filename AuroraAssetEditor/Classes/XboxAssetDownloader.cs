@@ -1,7 +1,7 @@
-﻿// 
+﻿//
 // 	XboxAssetDownloader.cs
 // 	AuroraAssetEditor
-// 
+//
 // 	Created by Swizzy on 10/05/2015
 // 	Copyright (c) 2015 Swizzy. All rights reserved.
 
@@ -71,10 +71,10 @@ namespace AuroraAssetEditor.Classes {
                 ret.Add(new XboxLocale(id, name));
                 tmp.Add(id);
             }
-            ret.Sort((l1, l2) => String.CompareOrdinal(l1.ToString(), l2.ToString()));
+            ret.Sort((l1, l2) => string.CompareOrdinal(l1.ToString(), l2.ToString()));
             return ret.ToArray();
             }
-            catch() { return new XboxLocale[0]; }
+            catch { return new XboxLocale[0]; }
         }
     }
 
