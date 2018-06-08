@@ -1,4 +1,7 @@
 # AuroraAssetEditor
+
+** NOTE: The latest version of this project can be found here from now on: https://github.com/XboxUnity/AuroraAssetEditor **
+
 A Graphical editor for Aurora's .asset files
 
 There will be more features added to this tool as i find the time to do so, first version only supports reading/writing Aurora .asset files
